@@ -24,6 +24,21 @@ defmodule OddishWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/o/:org/", OddishWeb do
+    pipe_through :browser
+
+    live_session :app,
+      on_mount: [
+        {OddishWeb.UserAuth, :mount_current_scope},
+        {OddishWeb.UserAuth, :assign_org_to_scope}
+      ] do
+      live "/soltas", SoltaLive.Index, :index
+      live "/soltas/new", SoltaLive.Form, :new
+      live "/soltas/:id", SoltaLive.Show, :show
+      live "/soltas/:id/edit", SoltaLive.Form, :edit
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", OddishWeb do
   #   pipe_through :api

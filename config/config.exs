@@ -28,7 +28,7 @@ config :oddish, :scopes,
     schema_key: :org_id,
     schema_type: :id,
     schema_table: :organizations,
-    test_data_fixture: MyApp.AccountsFixtures,
+    test_data_fixture: Oddish.AccountsFixtures,
     test_setup_helper: :register_and_log_in_user_with_org
   ]
 

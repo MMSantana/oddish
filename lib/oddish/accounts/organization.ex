@@ -3,6 +3,7 @@ defmodule Oddish.Accounts.Organization do
   import Ecto.Changeset
   import Ecto.Query, warn: false
 
+  alias Ecto.Multi
   alias Oddish.Repo
   alias Oddish.Accounts.Organization
 
@@ -72,6 +73,51 @@ defmodule Oddish.Accounts.Organization do
     |> Repo.insert()
   end
 
+  def create_organization(attrs, %Oddish.Accounts.Scope{user: %{id: user_id}}) do
+    Multi.new()
+    |> Multi.run(:organization, fn repo, _ ->
+      insert_organization_with_unique_slug(attrs, repo)
+    end)
+    |> Multi.insert(:user_organization, fn %{organization: organization} ->
+      %Oddish.Accounts.UserOrganization{}
+      |> Oddish.Accounts.UserOrganization.changeset(%{
+        user_id: user_id,
+        organization_id: organization.id,
+        role: :admin
+      })
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{organization: organization}} -> {:ok, organization}
+      {:error, :organization, changeset, _} -> {:error, changeset}
+      {:error, :user_organization, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  defp insert_organization_with_unique_slug(attrs, repo) do
+    changeset = Organization.changeset(%Organization{}, attrs)
+
+    if changeset.valid? do
+      base_slug = Ecto.Changeset.get_field(changeset, :slug)
+      unique_slug = find_unique_slug(base_slug, repo)
+
+      changeset
+      |> Ecto.Changeset.put_change(:slug, unique_slug)
+      |> repo.insert()
+    else
+      {:error, changeset}
+    end
+  end
+
+  defp find_unique_slug(base_slug, repo, counter \\ 0) do
+    candidate = if counter == 0, do: base_slug, else: "#{base_slug}-#{counter}"
+
+    case repo.get_by(Organization, slug: candidate) do
+      nil -> candidate
+      _ -> find_unique_slug(base_slug, repo, counter + 1)
+    end
+  end
+
   @doc """
   Updates a organization.
 
@@ -136,7 +182,7 @@ defmodule Oddish.Accounts.Organization do
     )
   end
 
-  def get_organization_by_slug!(org_slug, %Oddish.Accounts.Scope{user: %{id: user_id}}) do
+  def get_organization_by_slug!(%Oddish.Accounts.Scope{user: %{id: user_id}}, org_slug) do
     organization = Repo.get_by!(Organization, slug: org_slug)
 
     if user_belongs?(user_id, organization.id) do
