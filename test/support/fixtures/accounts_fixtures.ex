@@ -86,4 +86,25 @@ defmodule Oddish.AccountsFixtures do
       set: [inserted_at: dt, authenticated_at: dt]
     )
   end
+
+  def organization_scope_fixture(scope \\ user_scope_fixture()) do
+    org = organization_fixture(scope)
+    Scope.put_organization(scope, org)
+  end
+
+  @doc """
+  Generate a organization.
+  """
+  def organization_fixture(attrs \\ %{}) do
+    {:ok, organization} =
+      attrs
+      |> Enum.into(%{
+        name: "some name",
+        slug: "some slug",
+        tier: "some tier"
+      })
+      |> Oddish.Accounts.Organization.create_organization()
+
+    organization
+  end
 end

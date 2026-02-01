@@ -89,6 +89,18 @@ defmodule OddishWeb.UserAuth do
     end
   end
 
+  # user_auth.ex
+  def assign_org_to_scope(conn, _opts) do
+    current_scope = conn.assigns.current_scope
+
+    if slug = conn.params["org"] do
+      org = Oddish.Accounts.Organization.get_organization_by_slug!(current_scope, slug)
+      assign(conn, :current_scope, Oddish.Accounts.Scope.put_organization(current_scope, org))
+    else
+      conn
+    end
+  end
+
   # Reissue the session token if it is older than the configured reissue age.
   defp maybe_reissue_user_session_token(conn, user, token_inserted_at) do
     token_age = DateTime.diff(DateTime.utc_now(:second), token_inserted_at, :day)
@@ -244,6 +256,32 @@ defmodule OddishWeb.UserAuth do
       {:halt, socket}
     end
   end
+
+  # user_auth.ex
+  def on_mount(:assign_org_to_scope, %{"org" => slug}, _session, socket) do
+    socket =
+      case socket.assigns.current_scope do
+        %{organization: nil} = scope ->
+          org =
+            Oddish.Accounts.Organization.get_organization_by_slug!(
+              socket.assigns.current_scope,
+              slug
+            )
+
+          Phoenix.Component.assign(
+            socket,
+            :current_scope,
+            Oddish.Accounts.Scope.put_organization(scope, org)
+          )
+
+        _ ->
+          socket
+      end
+
+    {:cont, socket}
+  end
+
+  def on_mount(:assign_org_to_scope, _params, _session, socket), do: {:cont, socket}
 
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->

@@ -9,7 +9,6 @@ import Config
 
 config :oddish, :scopes,
   user: [
-    default: true,
     module: Oddish.Accounts.Scope,
     assign_key: :current_scope,
     access_path: [:user, :id],
@@ -18,6 +17,19 @@ config :oddish, :scopes,
     schema_table: :users,
     test_data_fixture: Oddish.AccountsFixtures,
     test_setup_helper: :register_and_log_in_user
+  ],
+  organization: [
+    default: true,
+    module: Oddish.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:organization, :id],
+    route_prefix: "/o/:org",
+    route_access_path: [:organization, :slug],
+    schema_key: :org_id,
+    schema_type: :id,
+    schema_table: :organizations,
+    test_data_fixture: MyApp.AccountsFixtures,
+    test_setup_helper: :register_and_log_in_user_with_org
   ]
 
 config :oddish,

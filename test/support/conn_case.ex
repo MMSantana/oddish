@@ -76,4 +76,9 @@ defmodule OddishWeb.ConnCase do
   defp maybe_set_token_authenticated_at(token, authenticated_at) do
     Oddish.AccountsFixtures.override_token_authenticated_at(token, authenticated_at)
   end
+
+  def register_and_log_in_user_with_org(context) do
+    %{conn: conn, user: _user, scope: scope} = register_and_log_in_user(context)
+    %{conn: conn, scope: Oddish.AccountsFixtures.organization_scope_fixture(scope)}
+  end
 end
