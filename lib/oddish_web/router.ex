@@ -36,6 +36,11 @@ defmodule OddishWeb.Router do
       live "/soltas/new", SoltaLive.Form, :new
       live "/soltas/:id", SoltaLive.Show, :show
       live "/soltas/:id/edit", SoltaLive.Form, :edit
+
+      live "/grazes", GrazeLive.Index, :index
+      live "/grazes/new", GrazeLive.Form, :new
+      live "/grazes/:id", GrazeLive.Show, :show
+      live "/grazes/:id/edit", GrazeLive.Form, :edit
     end
   end
 
