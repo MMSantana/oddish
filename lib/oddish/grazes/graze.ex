@@ -32,7 +32,6 @@ defmodule Oddish.Grazes.Graze do
       :flock_type,
       :flock_quantity,
       :start_date,
-      :end_date,
       :planned_period,
       :status,
       :solta_id

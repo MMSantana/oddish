@@ -10,20 +10,29 @@ defmodule OddishWeb.GrazeLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage graze records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="graze-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:flock_type]} type="text" label="Flock type" />
-        <.input field={@form[:flock_quantity]} type="number" label="Flock quantity" />
-        <.input field={@form[:start_date]} type="date" label="Start date" />
-        <.input field={@form[:end_date]} type="date" label="End date" />
-        <.input field={@form[:planned_period]} type="number" label="Planned period" />
-        <.input field={@form[:status]} type="text" label="Status" />
-        <.input field={@form[:solta_id]} type="number" label="Solta" />
+        <.input
+          field={@form[:flock_type]}
+          type="select"
+          options={Ecto.Enum.values(Oddish.Grazes.Graze, :flock_type)}
+          label="Rebanho"
+        />
+        <.input field={@form[:flock_quantity]} type="number" label="Quantidade" />
+        <.input field={@form[:start_date]} type="date" label="Data inicial" />
+        <.input field={@form[:end_date]} type="date" label="Data final" />
+        <.input field={@form[:planned_period]} type="number" label="Período planejado" />
+        <.input
+          field={@form[:status]}
+          type="select"
+          options={Ecto.Enum.values(Oddish.Grazes.Graze, :status)}
+          label="Status"
+        />
+        <.input field={@form[:solta_id]} type="select" options={@soltas} label="Solta" />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Graze</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @graze)}>Cancel</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @graze)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -32,8 +41,13 @@ defmodule OddishWeb.GrazeLive.Form do
 
   @impl true
   def mount(params, _session, socket) do
+    soltas =
+      Oddish.Soltas.list_soltas(socket.assigns.current_scope)
+      |> Enum.map(fn solta -> {solta.name, solta.id} end)
+
     {:ok,
      socket
+     |> assign(:soltas, soltas)
      |> assign(:return_to, return_to(params["return_to"]))
      |> apply_action(socket.assigns.live_action, params)}
   end
@@ -45,7 +59,7 @@ defmodule OddishWeb.GrazeLive.Form do
     graze = Grazes.get_graze!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Graze")
+    |> assign(:page_title, "Editar lote")
     |> assign(:graze, graze)
     |> assign(:form, to_form(Grazes.change_graze(socket.assigns.current_scope, graze)))
   end
@@ -54,7 +68,7 @@ defmodule OddishWeb.GrazeLive.Form do
     graze = %Graze{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Graze")
+    |> assign(:page_title, "Novo lote")
     |> assign(:graze, graze)
     |> assign(:form, to_form(Grazes.change_graze(socket.assigns.current_scope, graze)))
   end
