@@ -191,4 +191,13 @@ defmodule Oddish.Accounts.Organization do
       {:error, :unauthorized}
     end
   end
+
+  def get_organizations_by_user(%Oddish.Accounts.Scope{user: %{id: user_id}}) do
+    Repo.all(
+      from uo in Oddish.Accounts.UserOrganization,
+        where: uo.user_id == ^user_id,
+        join: o in assoc(uo, :organization),
+        select: o
+    )
+  end
 end

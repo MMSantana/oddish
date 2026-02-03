@@ -18,11 +18,12 @@ defmodule OddishWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", OddishWeb do
-    pipe_through :browser
+  # scope "/", OddishWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
 
-    get "/", PageController, :home
-  end
+  #   get "/", PageController, :home
+
+  # end
 
   scope "/o/:org/", OddishWeb do
     pipe_through :browser
@@ -75,6 +76,7 @@ defmodule OddishWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{OddishWeb.UserAuth, :require_authenticated}] do
+      live "/", OrganizationLive.Index, :index
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
     end
