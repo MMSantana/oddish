@@ -273,6 +273,12 @@ defmodule Oddish.Accounts do
     UserNotifier.deliver_login_instructions(user, magic_link_url_fun.(encoded_token))
   end
 
+  def local_login_instructions(%User{} = user) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+    Repo.insert!(user_token)
+    "/users/log-in/#{encoded_token}"
+  end
+
   @doc """
   Deletes the signed token with the given context.
   """
