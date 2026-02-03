@@ -17,9 +17,14 @@ defmodule OddishWeb.OrganizationLive.Index do
   def mount(_params, _session, socket) do
     scope = socket.assigns.current_scope
 
-    socket =
-      assign(socket, org_list: Oddish.Accounts.Organization.get_organizations_by_user(scope))
+    organizations = Oddish.Accounts.Organization.get_organizations_by_user(scope)
 
-    {:ok, socket}
+    if length(organizations) > 1 do
+      socket = assign(socket, org_list: organizations)
+
+      {:ok, socket}
+    else
+      {:ok, push_navigate(socket, to: ~p"/o/#{List.first(organizations).slug}")}
+    end
   end
 end
