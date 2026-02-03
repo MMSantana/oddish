@@ -8,8 +8,7 @@ defmodule OddishWeb.GrazeLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Graze {@graze.id}
-        <:subtitle>This is a graze record from your database.</:subtitle>
+        Lote {@graze.id}
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/grazes"}>
             <.icon name="hero-arrow-left" />
@@ -18,19 +17,19 @@ defmodule OddishWeb.GrazeLive.Show do
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{@graze}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Edit graze
+            <.icon name="hero-pencil-square" /> Editar lote
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Flock type">{@graze.flock_type}</:item>
-        <:item title="Flock quantity">{@graze.flock_quantity}</:item>
-        <:item title="Start date">{@graze.start_date}</:item>
-        <:item title="End date">{@graze.end_date}</:item>
-        <:item title="Planned period">{@graze.planned_period}</:item>
-        <:item title="Status">{@graze.status}</:item>
-        <:item title="Solta">{@graze.solta_id}</:item>
+        <:item title="Solta">{@graze.solta.name}</:item>
+        <:item title="Tipo de rebanho">{String.capitalize(Atom.to_string(@graze.flock_type))}</:item>
+        <:item title="Quantidade de animais">{@graze.flock_quantity}</:item>
+        <:item title="Data inicial">{@graze.start_date}</:item>
+        <:item title="Data final">{@graze.end_date}</:item>
+        <:item title="Período planejado">{@graze.planned_period} dias</:item>
+        <:item title="Status">{translate_status(@graze.status)}</:item>
       </.list>
     </Layouts.app>
     """
@@ -44,7 +43,7 @@ defmodule OddishWeb.GrazeLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Graze")
+     |> assign(:page_title, "Detalhes do lote")
      |> assign(:graze, Grazes.get_graze!(socket.assigns.current_scope, id))}
   end
 
@@ -62,7 +61,7 @@ defmodule OddishWeb.GrazeLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current graze was deleted.")
+     |> put_flash(:error, "O lote foi deletado")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/grazes")}
   end
 
@@ -70,4 +69,10 @@ defmodule OddishWeb.GrazeLive.Show do
       when type in [:created, :updated, :deleted] do
     {:noreply, socket}
   end
+
+  defp translate_status(:planned), do: "Planejado"
+  defp translate_status(:ongoing), do: "Ativo"
+  defp translate_status(:finished), do: "Encerrado"
+  defp translate_status(:canceled), do: "Cancelado"
+  defp translate_status(_), do: "Desconhecido"
 end

@@ -65,6 +65,7 @@ defmodule Oddish.Grazes do
   """
   def get_graze!(%Scope{} = scope, id) do
     Repo.get_by!(Graze, id: id, org_id: scope.organization.id)
+    |> Repo.preload(:solta)
   end
 
   @doc """
