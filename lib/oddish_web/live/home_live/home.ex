@@ -14,7 +14,7 @@ defmodule OddishWeb.HomeLive.Home do
           icon="hero-globe-europe-africa"
           title="Soltas"
           description="Adicione, remova e edite as soltas"
-          color="green"
+          color="bg-primary"
         />
       </div>
 
@@ -24,7 +24,7 @@ defmodule OddishWeb.HomeLive.Home do
           icon="hero-chart-bar"
           title="Manejo"
           description="Faça a gestão de manejo"
-          color="red"
+          color="bg-primary"
         />
       </div>
     </Layouts.app>
@@ -47,7 +47,7 @@ defmodule OddishWeb.HomeLive.Home do
         <div class="flex items-center gap-3 mb-4">
           <div class={[
             "p-3 rounded-lg transition-colors duration-200",
-            color_classes(@color)
+            @color
           ]}>
             <.icon name={@icon} class="w-8 h-8 text-white" />
           </div>
@@ -64,10 +64,4 @@ defmodule OddishWeb.HomeLive.Home do
     </.link>
     """
   end
-
-  defp color_classes("blue"), do: "bg-blue-500 group-hover:bg-blue-600"
-  defp color_classes("green"), do: "bg-green-500 group-hover:bg-green-600"
-  defp color_classes("purple"), do: "bg-purple-500 group-hover:bg-purple-600"
-  defp color_classes("orange"), do: "bg-orange-500 group-hover:bg-orange-600"
-  defp color_classes(_), do: "bg-blue-500 group-hover:bg-blue-600"
 end
