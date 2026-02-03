@@ -9,7 +9,6 @@ defmodule OddishWeb.SoltaLive.Show do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         Solta {@solta.id}
-        <:subtitle>This is a solta record from your database.</:subtitle>
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/soltas"}>
             <.icon name="hero-arrow-left" />
@@ -24,9 +23,9 @@ defmodule OddishWeb.SoltaLive.Show do
       </.header>
 
       <.list>
-        <:item title="Name">{@solta.name}</:item>
-        <:item title="Area">{@solta.area}</:item>
-        <:item title="Grass type">{@solta.grass_type}</:item>
+        <:item title="Nome">{@solta.name}</:item>
+        <:item title="Área">{@solta.area}</:item>
+        <:item title="Tipo de capim">{@solta.grass_type}</:item>
       </.list>
     </Layouts.app>
     """
@@ -40,7 +39,7 @@ defmodule OddishWeb.SoltaLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Solta")
+     |> assign(:page_title, "Detalhes da solta")
      |> assign(:solta, Soltas.get_solta!(socket.assigns.current_scope, id))}
   end
 
@@ -58,7 +57,7 @@ defmodule OddishWeb.SoltaLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current solta was deleted.")
+     |> put_flash(:error, "A solta foi deletada.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/soltas")}
   end
 

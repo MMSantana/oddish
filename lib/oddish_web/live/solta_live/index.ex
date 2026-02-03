@@ -8,10 +8,10 @@ defmodule OddishWeb.SoltaLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Soltas
+        Soltas
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/soltas/new"}>
-            <.icon name="hero-plus" /> New Solta
+            <.icon name="hero-plus" /> Nova solta
           </.button>
         </:actions>
       </.header>
@@ -25,9 +25,9 @@ defmodule OddishWeb.SoltaLive.Index do
           end
         }
       >
-        <:col :let={{_id, solta}} label="Name">{solta.name}</:col>
-        <:col :let={{_id, solta}} label="Area">{solta.area}</:col>
-        <:col :let={{_id, solta}} label="Grass type">{solta.grass_type}</:col>
+        <:col :let={{_id, solta}} label="Nome">{solta.name}</:col>
+        <:col :let={{_id, solta}} label="Área">{solta.area}</:col>
+        <:col :let={{_id, solta}} label="Tipo de capim">{solta.grass_type}</:col>
         <:action :let={{_id, solta}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/soltas/#{solta}"}>Show</.link>
@@ -39,9 +39,9 @@ defmodule OddishWeb.SoltaLive.Index do
         <:action :let={{id, solta}}>
           <.link
             phx-click={JS.push("delete", value: %{id: solta.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza que deseja deletar esta solta?"
           >
-            Delete
+            Deletar
           </.link>
         </:action>
       </.table>

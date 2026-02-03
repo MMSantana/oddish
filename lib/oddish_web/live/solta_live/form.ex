@@ -10,16 +10,15 @@ defmodule OddishWeb.SoltaLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage solta records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="solta-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:area]} type="number" label="Area" step="any" />
-        <.input field={@form[:grass_type]} type="text" label="Grass type" />
+        <.input field={@form[:name]} type="text" label="Nome" />
+        <.input field={@form[:area]} type="number" label="Área" step="any" />
+        <.input field={@form[:grass_type]} type="text" label="Tipo de capim" />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Solta</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @solta)}>Cancel</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @solta)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -41,7 +40,7 @@ defmodule OddishWeb.SoltaLive.Form do
     solta = Soltas.get_solta!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Solta")
+    |> assign(:page_title, "Editar solta")
     |> assign(:solta, solta)
     |> assign(:form, to_form(Soltas.change_solta(socket.assigns.current_scope, solta)))
   end
@@ -50,7 +49,7 @@ defmodule OddishWeb.SoltaLive.Form do
     solta = %Solta{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Solta")
+    |> assign(:page_title, "Nova solta")
     |> assign(:solta, solta)
     |> assign(:form, to_form(Soltas.change_solta(socket.assigns.current_scope, solta)))
   end
@@ -72,7 +71,7 @@ defmodule OddishWeb.SoltaLive.Form do
       {:ok, solta} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Solta updated successfully")
+         |> put_flash(:info, "Solta atualizada")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, solta)
          )}
@@ -87,7 +86,7 @@ defmodule OddishWeb.SoltaLive.Form do
       {:ok, solta} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Solta created successfully")
+         |> put_flash(:info, "Solta criada")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, solta)
          )}
