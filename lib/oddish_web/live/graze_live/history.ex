@@ -1,0 +1,85 @@
+defmodule OddishWeb.GrazeLive.History do
+  use OddishWeb, :live_view
+
+  alias Oddish.Grazes
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <.header>
+        Listing Grazes
+        <:actions>
+          <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
+            <.icon name="hero-plus" /> New Graze
+          </.button>
+        </:actions>
+      </.header>
+
+      <.table
+        id="grazes"
+        rows={@streams.grazes}
+        row_click={
+          fn {_id, graze} ->
+            JS.navigate(~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}")
+          end
+        }
+      >
+        <:col :let={{_id, graze}} label="Flock type">{graze.flock_type}</:col>
+        <:col :let={{_id, graze}} label="Flock quantity">{graze.flock_quantity}</:col>
+        <:col :let={{_id, graze}} label="Start date">{graze.start_date}</:col>
+        <:col :let={{_id, graze}} label="End date">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Planned period">{graze.planned_period}</:col>
+        <:col :let={{_id, graze}} label="Status">{graze.status}</:col>
+        <:col :let={{_id, graze}} label="Solta">{graze.solta_id}</:col>
+        <:action :let={{_id, graze}}>
+          <div class="sr-only">
+            <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
+          </div>
+          <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}/edit"}>
+            Edit
+          </.link>
+        </:action>
+        <:action :let={{id, graze}}>
+          <.link
+            phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
+            data-confirm="Are you sure?"
+          >
+            Delete
+          </.link>
+        </:action>
+      </.table>
+    </Layouts.app>
+    """
+  end
+
+  @impl true
+  def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Grazes.subscribe_grazes(socket.assigns.current_scope)
+    end
+
+    {:ok,
+     socket
+     |> assign(:page_title, "Listing Grazes")
+     |> stream(:grazes, list_grazes(socket.assigns.current_scope))}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    graze = Grazes.get_graze!(socket.assigns.current_scope, id)
+    {:ok, _} = Grazes.delete_graze(socket.assigns.current_scope, graze)
+
+    {:noreply, stream_delete(socket, :grazes, graze)}
+  end
+
+  @impl true
+  def handle_info({type, %Oddish.Grazes.Graze{}}, socket)
+      when type in [:created, :updated, :deleted] do
+    {:noreply, stream(socket, :grazes, list_grazes(socket.assigns.current_scope), reset: true)}
+  end
+
+  defp list_grazes(current_scope) do
+    Grazes.list_grazes(current_scope)
+  end
+end

@@ -8,42 +8,87 @@ defmodule OddishWeb.GrazeLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Grazes
+        Manejo
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
-            <.icon name="hero-plus" /> New Graze
+            <.icon name="hero-plus" /> Novo lote
           </.button>
         </:actions>
       </.header>
-
+      <h1 :if={@has_planned_grazes}>Lotes planejados</h1>
       <.table
-        id="grazes"
-        rows={@streams.grazes}
+        :if={@has_planned_grazes}
+        id="planned_grazes"
+        rows={@streams.planned_grazes}
         row_click={
           fn {_id, graze} ->
             JS.navigate(~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}")
           end
         }
       >
-        <:col :let={{_id, graze}} label="Flock type">{graze.flock_type}</:col>
-        <:col :let={{_id, graze}} label="Flock quantity">{graze.flock_quantity}</:col>
-        <:col :let={{_id, graze}} label="Start date">{graze.start_date}</:col>
-        <:col :let={{_id, graze}} label="End date">{graze.end_date}</:col>
-        <:col :let={{_id, graze}} label="Planned period">{graze.planned_period}</:col>
-        <:col :let={{_id, graze}} label="Status">{graze.status}</:col>
-        <:col :let={{_id, graze}} label="Solta">{graze.solta_id}</:col>
-        <:action :let={{_id, graze}}>
+        <:col :let={{_id, graze}} label="Solta">{graze.solta.name}</:col>
+        <:col :let={{_id, graze}} label="Data inicial">{graze.start_date}</:col>
+        <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
+        <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Tipo">
+          {String.capitalize(Atom.to_string(graze.flock_type))}
+        </:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
+        <:action :let={{id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
           </div>
-          <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}/edit"}>
-            Edit
+          <.link
+            phx-click={JS.push("start-graze", value: %{id: graze.id}) |> hide("##{id}")}
+            data-confirm="Começar o lote?"
+          >
+            Começar
           </.link>
         </:action>
         <:action :let={{id, graze}}>
           <.link
             phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Quer mesmo deletar este lote"
+          >
+            Delete
+          </.link>
+        </:action>
+      </.table>
+
+      <h1 :if={@has_ongoing_grazes}>Lotes em andamento</h1>
+      <.table
+        :if={@has_ongoing_grazes}
+        id="ongoing_grazes"
+        rows={@streams.ongoing_grazes}
+        row_click={
+          fn {_id, graze} ->
+            JS.navigate(~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}")
+          end
+        }
+      >
+        <:col :let={{_id, graze}} label="Solta">{graze.solta.name}</:col>
+        <:col :let={{_id, graze}} label="Data inicial">{graze.start_date}</:col>
+        <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
+        <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Tipo">
+          {String.capitalize(Atom.to_string(graze.flock_type))}
+        </:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
+        <:action :let={{id, graze}}>
+          <div class="sr-only">
+            <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
+          </div>
+          <.link
+            phx-click={JS.push("end-graze", value: %{id: graze.id}) |> hide("##{id}")}
+            data-confirm="Encerrar o lote?"
+          >
+            Encerrar
+          </.link>
+        </:action>
+        <:action :let={{id, graze}}>
+          <.link
+            phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
+            data-confirm="Quer mesmo deletar este lote?"
           >
             Delete
           </.link>
@@ -59,9 +104,16 @@ defmodule OddishWeb.GrazeLive.Index do
       Grazes.subscribe_grazes(socket.assigns.current_scope)
     end
 
+    planned_grazes = list_planned_grazes(socket.assigns.current_scope)
+    ongoing_grazes = list_ongoing_grazes(socket.assigns.current_scope)
+
     {:ok,
      socket
      |> assign(:page_title, "Listing Grazes")
+     |> assign(:has_planned_grazes, length(planned_grazes) > 0)
+     |> assign(:has_ongoing_grazes, length(ongoing_grazes) > 0)
+     |> stream(:planned_grazes, planned_grazes)
+     |> stream(:ongoing_grazes, ongoing_grazes)
      |> stream(:grazes, list_grazes(socket.assigns.current_scope))}
   end
 
@@ -74,12 +126,39 @@ defmodule OddishWeb.GrazeLive.Index do
   end
 
   @impl true
+  def handle_event("start-graze", %{"id" => id}, socket) do
+    graze = Grazes.get_graze!(socket.assigns.current_scope, id)
+    {:ok, _} = Grazes.start_planned_graze(socket.assigns.current_scope, graze)
+
+    {:noreply, stream_delete(socket, :planned_grazes, graze)}
+  end
+
+  @impl true
+  def handle_event("end-graze", %{"id" => id}, socket) do
+    graze = Grazes.get_graze!(socket.assigns.current_scope, id)
+    {:ok, _} = Grazes.end_ongoing_graze(socket.assigns.current_scope, graze)
+
+    {:noreply, stream_delete(socket, :ongoing_grazes, graze)}
+  end
+
+  @impl true
   def handle_info({type, %Oddish.Grazes.Graze{}}, socket)
       when type in [:created, :updated, :deleted] do
-    {:noreply, stream(socket, :grazes, list_grazes(socket.assigns.current_scope), reset: true)}
+    {:noreply,
+     socket
+     |> stream(:ongoing_grazes, list_ongoing_grazes(socket.assigns.current_scope), reset: true)
+     |> stream(:planned_grazes, list_planned_grazes(socket.assigns.current_scope), reset: true)}
   end
 
   defp list_grazes(current_scope) do
     Grazes.list_grazes(current_scope)
+  end
+
+  defp list_planned_grazes(current_scope) do
+    Grazes.list_grazes_by_status(current_scope, :planned)
+  end
+
+  defp list_ongoing_grazes(current_scope) do
+    Grazes.list_grazes_by_status(current_scope, :ongoing)
   end
 end

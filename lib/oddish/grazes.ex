@@ -44,6 +44,11 @@ defmodule Oddish.Grazes do
     Repo.all_by(Graze, org_id: scope.organization.id)
   end
 
+  def list_grazes_by_status(%Scope{} = scope, status) do
+    Repo.all_by(Graze, org_id: scope.organization.id, status: status)
+    |> Repo.preload(:solta)
+  end
+
   @doc """
   Gets a single graze.
 
@@ -128,6 +133,18 @@ defmodule Oddish.Grazes do
       broadcast_graze(scope, {:deleted, graze})
       {:ok, graze}
     end
+  end
+
+  def start_planned_graze(%Scope{} = scope, %Graze{} = graze) do
+    true = graze.status == :planned
+
+    update_graze(scope, graze, %{status: :ongoing})
+  end
+
+  def end_ongoing_graze(%Scope{} = scope, %Graze{} = graze) do
+    true = graze.status == :ongoing
+
+    update_graze(scope, graze, %{status: :finished})
   end
 
   @doc """

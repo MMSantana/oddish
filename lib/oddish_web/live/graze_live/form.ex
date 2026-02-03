@@ -76,7 +76,7 @@ defmodule OddishWeb.GrazeLive.Form do
       {:ok, graze} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Graze updated successfully")
+         |> put_flash(:info, "Lote atualizado")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, graze)
          )}
@@ -91,7 +91,7 @@ defmodule OddishWeb.GrazeLive.Form do
       {:ok, graze} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Graze created successfully")
+         |> put_flash(:info, "Lote criado")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, graze)
          )}
