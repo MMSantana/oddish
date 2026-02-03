@@ -32,6 +32,8 @@ defmodule OddishWeb.Router do
         {OddishWeb.UserAuth, :mount_current_scope},
         {OddishWeb.UserAuth, :assign_org_to_scope}
       ] do
+      live "/", HomeLive.Home, :index
+
       live "/soltas", SoltaLive.Index, :index
       live "/soltas/new", SoltaLive.Form, :new
       live "/soltas/:id", SoltaLive.Show, :show
