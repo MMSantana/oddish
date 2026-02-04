@@ -10,6 +10,12 @@ defmodule OddishWeb.GrazeLive.Index do
       <.header>
         Manejo
         <:actions>
+          <.button
+            variant="primary"
+            navigate={~p"/o/#{@current_scope.organization.slug}/grazes/history"}
+          >
+            <.icon name="hero-plus" /> Histórico
+          </.button>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
             <.icon name="hero-plus" /> Novo lote
           </.button>
@@ -54,6 +60,8 @@ defmodule OddishWeb.GrazeLive.Index do
           </.link>
         </:action>
       </.table>
+
+      <div :if={@has_ongoing_grazes && @has_planned_grazes} class="divider divider-primary"></div>
 
       <h1 :if={@has_ongoing_grazes}>Lotes em andamento</h1>
       <.table
