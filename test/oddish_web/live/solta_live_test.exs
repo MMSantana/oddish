@@ -31,11 +31,11 @@ defmodule OddishWeb.SoltaLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Solta")
+               |> element("a", "Nova solta")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/soltas/new")
 
-      assert render(form_live) =~ "New Solta"
+      assert render(form_live) =~ "Nova solta"
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
@@ -48,7 +48,7 @@ defmodule OddishWeb.SoltaLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/soltas")
 
       html = render(index_live)
-      assert html =~ "Solta created successfully"
+      assert html =~ "Solta criada"
       assert html =~ "some name"
     end
 
@@ -61,7 +61,7 @@ defmodule OddishWeb.SoltaLiveTest do
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/soltas/#{solta}/edit")
 
-      assert render(form_live) =~ "Edit Solta"
+      assert render(form_live) =~ "Editar solta"
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
@@ -74,14 +74,14 @@ defmodule OddishWeb.SoltaLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/soltas")
 
       html = render(index_live)
-      assert html =~ "Solta updated successfully"
+      assert html =~ "Solta atualizada"
       assert html =~ "some updated name"
     end
 
     test "deletes solta in listing", %{conn: conn, solta: solta, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/soltas")
 
-      assert index_live |> element("#soltas-#{solta.id} a", "Delete") |> render_click()
+      assert index_live |> element("#soltas-#{solta.id} a", "Deletar") |> render_click()
       refute has_element?(index_live, "#soltas-#{solta.id}")
     end
   end
@@ -92,7 +92,7 @@ defmodule OddishWeb.SoltaLiveTest do
     test "displays solta", %{conn: conn, solta: solta, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/soltas/#{solta}")
 
-      assert html =~ "Show Solta"
+      assert html =~ "Solta #{solta.id}"
       assert html =~ solta.name
     end
 
@@ -108,7 +108,7 @@ defmodule OddishWeb.SoltaLiveTest do
                  ~p"/o/#{scope.organization.slug}/soltas/#{solta}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Solta"
+      assert render(form_live) =~ "Editar solta"
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
@@ -121,7 +121,7 @@ defmodule OddishWeb.SoltaLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/soltas/#{solta}")
 
       html = render(show_live)
-      assert html =~ "Solta updated successfully"
+      assert html =~ "Solta atualizada"
       assert html =~ "some updated name"
     end
   end
