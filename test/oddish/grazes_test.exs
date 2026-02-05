@@ -24,15 +24,15 @@ defmodule Oddish.GrazesTest do
       other_scope = organization_scope_fixture()
       graze = graze_fixture(scope)
       other_graze = graze_fixture(other_scope)
-      assert Grazes.list_grazes(scope) == [graze]
-      assert Grazes.list_grazes(other_scope) == [other_graze]
+      assert Grazes.list_grazes(scope) == [Repo.preload(graze, :solta)]
+      assert Grazes.list_grazes(other_scope) == [Repo.preload(other_graze, :solta)]
     end
 
     test "get_graze!/2 returns the graze with given id" do
       scope = organization_scope_fixture()
       graze = graze_fixture(scope)
       other_scope = organization_scope_fixture()
-      assert Grazes.get_graze!(scope, graze.id) == graze
+      assert Grazes.get_graze!(scope, graze.id) == Repo.preload(graze, :solta)
       assert_raise Ecto.NoResultsError, fn -> Grazes.get_graze!(other_scope, graze.id) end
     end
 
@@ -105,7 +105,7 @@ defmodule Oddish.GrazesTest do
       scope = organization_scope_fixture()
       graze = graze_fixture(scope)
       assert {:error, %Ecto.Changeset{}} = Grazes.update_graze(scope, graze, @invalid_attrs)
-      assert graze == Grazes.get_graze!(scope, graze.id)
+      assert Repo.preload(graze, :solta) == Grazes.get_graze!(scope, graze.id)
     end
 
     test "delete_graze/2 deletes the graze" do

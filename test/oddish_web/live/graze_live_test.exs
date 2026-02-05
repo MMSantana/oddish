@@ -4,14 +4,6 @@ defmodule OddishWeb.GrazeLiveTest do
   import Phoenix.LiveViewTest
   import Oddish.GrazesFixtures
 
-  @create_attrs %{
-    status: "planned",
-    flock_type: "bois",
-    flock_quantity: 42,
-    start_date: "2026-01-31",
-    end_date: "2026-01-31",
-    planned_period: 42
-  }
   @update_attrs %{
     status: :ongoing,
     flock_type: :bezerros,
@@ -45,7 +37,7 @@ defmodule OddishWeb.GrazeLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
 
       assert html =~ "Listing Grazes"
-      assert html =~ Atom.to_string(graze.flock_type)
+      assert html =~ String.capitalize(Atom.to_string(graze.flock_type))
     end
 
     test "saves new graze", %{conn: conn, scope: scope} do
@@ -64,11 +56,11 @@ defmodule OddishWeb.GrazeLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Graze")
+               |> element("a", "Novo lote")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/grazes/new")
 
-      assert render(form_live) =~ "New Graze"
+      assert render(form_live) =~ "Novo lote"
 
       assert form_live
              |> form("#graze-form", graze: @invalid_attrs)
@@ -81,20 +73,20 @@ defmodule OddishWeb.GrazeLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/grazes")
 
       html = render(index_live)
-      assert html =~ "Graze created successfully"
-      assert html =~ "bois"
+      assert html =~ "Lote criado"
+      assert html =~ "Bois"
     end
 
     test "updates graze in listing", %{conn: conn, graze: graze, scope: scope} do
-      {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
+      {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes/history")
 
       assert {:ok, form_live, _html} =
                index_live
-               |> element("#grazes-#{graze.id} a", "Edit")
+               |> element("#grazes-#{graze.id} a", "Editar")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/grazes/#{graze}/edit")
 
-      assert render(form_live) =~ "Edit Graze"
+      assert render(form_live) =~ "Editar lote"
 
       assert form_live
              |> form("#graze-form", graze: @invalid_attrs)
@@ -107,14 +99,14 @@ defmodule OddishWeb.GrazeLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/grazes")
 
       html = render(index_live)
-      assert html =~ "Graze updated successfully"
-      assert html =~ "bezerros"
+      assert html =~ "Lote atualizado"
+      assert html =~ "Bezerros"
     end
 
     test "deletes graze in listing", %{conn: conn, graze: graze, scope: scope} do
-      {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
+      {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes/history")
 
-      assert index_live |> element("#grazes-#{graze.id} a", "Delete") |> render_click()
+      assert index_live |> element("#grazes-#{graze.id} a", "Deletar") |> render_click()
       refute has_element?(index_live, "#grazes-#{graze.id}")
     end
   end
@@ -125,8 +117,8 @@ defmodule OddishWeb.GrazeLiveTest do
     test "displays graze", %{conn: conn, graze: graze, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes/#{graze}")
 
-      assert html =~ "Show Graze"
-      assert html =~ Atom.to_string(graze.flock_type)
+      assert html =~ "Lote"
+      assert html =~ String.capitalize(Atom.to_string(graze.flock_type))
     end
 
     test "updates graze and returns to show", %{conn: conn, graze: graze, scope: scope} do
@@ -134,14 +126,14 @@ defmodule OddishWeb.GrazeLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar lote")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/grazes/#{graze}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Graze"
+      assert render(form_live) =~ "Editar lote"
 
       assert form_live
              |> form("#graze-form", graze: @invalid_attrs)
@@ -154,8 +146,8 @@ defmodule OddishWeb.GrazeLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/grazes/#{graze}")
 
       html = render(show_live)
-      assert html =~ "Graze updated successfully"
-      assert html =~ "bezerros"
+      assert html =~ "Lote atualizado"
+      assert html =~ "Bezerros"
     end
   end
 end

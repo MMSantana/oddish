@@ -16,6 +16,7 @@ defmodule OddishWeb.GrazeLive.Form do
         <.input
           field={@form[:flock_type]}
           type="select"
+          prompt="Selecione um rebanho"
           options={Ecto.Enum.values(Oddish.Grazes.Graze, :flock_type)}
           label="Rebanho"
         />
@@ -26,10 +27,17 @@ defmodule OddishWeb.GrazeLive.Form do
         <.input
           field={@form[:status]}
           type="select"
+          prompt="Selecione um status"
           options={Ecto.Enum.values(Oddish.Grazes.Graze, :status)}
           label="Status"
         />
-        <.input field={@form[:solta_id]} type="select" options={@soltas} label="Solta" />
+        <.input
+          field={@form[:solta_id]}
+          type="select"
+          prompt="Selecione uma solta"
+          options={@soltas}
+          label="Solta"
+        />
         <footer>
           <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
           <.button navigate={return_path(@current_scope, @return_to, @graze)}>Cancelar</.button>

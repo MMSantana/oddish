@@ -39,7 +39,7 @@ defmodule OddishWeb.GrazeLive.History do
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
           </div>
           <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}/edit"}>
-            Edit
+            Editar
           </.link>
         </:action>
         <:action :let={{id, graze}}>
@@ -47,7 +47,7 @@ defmodule OddishWeb.GrazeLive.History do
             phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
             data-confirm="Are you sure?"
           >
-            Delete
+            Deletar
           </.link>
         </:action>
       </.table>
