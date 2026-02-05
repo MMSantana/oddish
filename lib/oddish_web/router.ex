@@ -45,6 +45,11 @@ defmodule OddishWeb.Router do
       live "/grazes/history", GrazeLive.History, :index
       live "/grazes/:id", GrazeLive.Show, :show
       live "/grazes/:id/edit", GrazeLive.Form, :edit
+
+      live "/bovines", BovineLive.Index, :index
+      live "/bovines/new", BovineLive.Form, :new
+      live "/bovines/:id", BovineLive.Show, :show
+      live "/bovines/:id/edit", BovineLive.Form, :edit
     end
   end
 

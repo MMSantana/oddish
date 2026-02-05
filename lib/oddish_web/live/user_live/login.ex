@@ -104,7 +104,7 @@ defmodule OddishWeb.UserLive.Login do
      |> push_navigate(to: ~p"/users/log-in")}
   end
 
-  defp local_mail_adapter? do
-    Application.get_env(:oddish, Oddish.Mailer)[:adapter] == Swoosh.Adapters.Local
-  end
+  # defp local_mail_adapter? do
+  #   Application.get_env(:oddish, Oddish.Mailer)[:adapter] == Swoosh.Adapters.Local
+  # end
 end
