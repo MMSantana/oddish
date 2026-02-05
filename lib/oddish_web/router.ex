@@ -50,6 +50,11 @@ defmodule OddishWeb.Router do
       live "/bovines/new", BovineLive.Form, :new
       live "/bovines/:id", BovineLive.Show, :show
       live "/bovines/:id/edit", BovineLive.Form, :edit
+
+      live "/packs", PackLive.Index, :index
+      live "/packs/new", PackLive.Form, :new
+      live "/packs/:id", PackLive.Show, :show
+      live "/packs/:id/edit", PackLive.Form, :edit
     end
   end
 
