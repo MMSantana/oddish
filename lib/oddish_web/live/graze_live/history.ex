@@ -25,13 +25,15 @@ defmodule OddishWeb.GrazeLive.History do
           end
         }
       >
-        <:col :let={{_id, graze}} label="Flock type">{graze.flock_type}</:col>
-        <:col :let={{_id, graze}} label="Flock quantity">{graze.flock_quantity}</:col>
-        <:col :let={{_id, graze}} label="Start date">{graze.start_date}</:col>
-        <:col :let={{_id, graze}} label="End date">{graze.end_date}</:col>
-        <:col :let={{_id, graze}} label="Planned period">{graze.planned_period}</:col>
+        <:col :let={{_id, graze}} label="Solta">{graze.solta.name}</:col>
+        <:col :let={{_id, graze}} label="Data inicial">{graze.start_date}</:col>
+        <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
+        <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Tipo">
+          {String.capitalize(Atom.to_string(graze.flock_type))}
+        </:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
         <:col :let={{_id, graze}} label="Status">{graze.status}</:col>
-        <:col :let={{_id, graze}} label="Solta">{graze.solta_id}</:col>
         <:action :let={{_id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>

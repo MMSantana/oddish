@@ -42,6 +42,7 @@ defmodule Oddish.Grazes do
   """
   def list_grazes(%Scope{} = scope) do
     Repo.all_by(Graze, org_id: scope.organization.id)
+    |> Repo.preload(:solta)
   end
 
   def list_grazes_by_status(%Scope{} = scope, status) do
