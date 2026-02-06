@@ -6,16 +6,12 @@ defmodule OddishWeb.GrazeLiveTest do
 
   @update_attrs %{
     status: :ongoing,
-    flock_type: :bezerros,
-    flock_quantity: 43,
     start_date: "2026-02-01",
     end_date: "2026-02-01",
     planned_period: 43
   }
   @invalid_attrs %{
     status: nil,
-    flock_type: nil,
-    flock_quantity: nil,
     start_date: nil,
     end_date: nil,
     planned_period: nil,
@@ -27,7 +23,7 @@ defmodule OddishWeb.GrazeLiveTest do
   defp create_graze(%{scope: scope}) do
     graze = graze_fixture(scope)
 
-    %{graze: graze}
+    %{graze: Oddish.Repo.preload(graze, [:pack])}
   end
 
   describe "Index" do
@@ -36,21 +32,21 @@ defmodule OddishWeb.GrazeLiveTest do
     test "lists all grazes", %{conn: conn, graze: graze, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
 
-      assert html =~ "Listing Grazes"
-      assert html =~ String.capitalize(Atom.to_string(graze.flock_type))
+      assert html =~ "Lista de manejos"
+      assert html =~ String.capitalize(Atom.to_string(graze.pack.flock_type))
     end
 
     test "saves new graze", %{conn: conn, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
       solta = Oddish.SoltasFixtures.solta_fixture(scope)
+      pack = Oddish.PacksFixtures.pack_fixture(scope)
 
       create_attrs = %{
         status: "planned",
-        flock_type: "bois",
-        flock_quantity: 42,
         start_date: "2026-01-31",
         end_date: "2026-01-31",
         planned_period: 42,
+        pack_id: pack.id,
         solta_id: solta.id
       }
 
@@ -74,7 +70,7 @@ defmodule OddishWeb.GrazeLiveTest do
 
       html = render(index_live)
       assert html =~ "Lote criado"
-      assert html =~ "Bois"
+      assert html =~ "Bezerros"
     end
 
     test "updates graze in listing", %{conn: conn, graze: graze, scope: scope} do
@@ -118,7 +114,7 @@ defmodule OddishWeb.GrazeLiveTest do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes/#{graze}")
 
       assert html =~ "Lote"
-      assert html =~ String.capitalize(Atom.to_string(graze.flock_type))
+      assert html =~ String.capitalize(Atom.to_string(graze.pack.flock_type))
     end
 
     test "updates graze and returns to show", %{conn: conn, graze: graze, scope: scope} do

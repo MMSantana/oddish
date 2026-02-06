@@ -11,8 +11,7 @@ defmodule Oddish.GrazesTest do
 
     @invalid_attrs %{
       status: nil,
-      flock_type: nil,
-      flock_quantity: nil,
+      pack_id: nil,
       start_date: nil,
       end_date: nil,
       planned_period: nil,
@@ -39,21 +38,19 @@ defmodule Oddish.GrazesTest do
     test "create_graze/2 with valid data creates a graze" do
       scope = organization_scope_fixture()
       solta = Oddish.SoltasFixtures.solta_fixture(scope)
+      pack = Oddish.PacksFixtures.pack_fixture(scope)
 
       valid_attrs = %{
         status: "planned",
-        flock_type: "bois",
-        flock_quantity: 42,
         start_date: ~D[2026-01-31],
         end_date: ~D[2026-01-31],
         planned_period: 42,
-        solta_id: solta.id
+        solta_id: solta.id,
+        pack_id: pack.id
       }
 
       assert {:ok, %Graze{} = graze} = Grazes.create_graze(scope, valid_attrs)
       assert graze.status == :planned
-      assert graze.flock_type == :bois
-      assert graze.flock_quantity == 42
       assert graze.start_date == ~D[2026-01-31]
       assert graze.end_date == ~D[2026-01-31]
       assert graze.planned_period == 42
@@ -70,25 +67,24 @@ defmodule Oddish.GrazesTest do
       scope = organization_scope_fixture()
       graze = graze_fixture(scope)
       other_solta = Oddish.SoltasFixtures.solta_fixture(scope)
+      other_pack = Oddish.PacksFixtures.pack_fixture(scope)
 
       update_attrs = %{
         status: "ongoing",
-        flock_type: "bezerros",
-        flock_quantity: 43,
         start_date: ~D[2026-02-01],
         end_date: ~D[2026-02-01],
         planned_period: 43,
-        solta_id: other_solta.id
+        solta_id: other_solta.id,
+        pack_id: other_pack.id
       }
 
       assert {:ok, %Graze{} = graze} = Grazes.update_graze(scope, graze, update_attrs)
       assert graze.status == :ongoing
-      assert graze.flock_type == :bezerros
-      assert graze.flock_quantity == 43
       assert graze.start_date == ~D[2026-02-01]
       assert graze.end_date == ~D[2026-02-01]
       assert graze.planned_period == 43
       assert graze.solta_id == other_solta.id
+      assert graze.pack_id == other_pack.id
     end
 
     test "update_graze/3 with invalid scope raises" do

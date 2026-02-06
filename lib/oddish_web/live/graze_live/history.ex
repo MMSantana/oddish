@@ -30,9 +30,9 @@ defmodule OddishWeb.GrazeLive.History do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
         <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.flock_type))}
+          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
         </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
         <:col :let={{_id, graze}} label="Status">{graze.status}</:col>
         <:action :let={{_id, graze}}>
           <div class="sr-only">
@@ -63,7 +63,7 @@ defmodule OddishWeb.GrazeLive.History do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Grazes")
+     |> assign(:page_title, "Histórico de manejos")
      |> stream(:grazes, list_grazes(socket.assigns.current_scope))}
   end
 
@@ -82,6 +82,6 @@ defmodule OddishWeb.GrazeLive.History do
   end
 
   defp list_grazes(current_scope) do
-    Grazes.list_grazes(current_scope)
+    Grazes.list_grazes(current_scope) |> Oddish.Repo.preload([:pack])
   end
 end

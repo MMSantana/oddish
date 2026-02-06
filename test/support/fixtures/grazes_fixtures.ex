@@ -9,14 +9,14 @@ defmodule Oddish.GrazesFixtures do
   """
   def graze_fixture(scope, attrs \\ %{}) do
     solta = Oddish.SoltasFixtures.solta_fixture(scope)
+    pack = Oddish.PacksFixtures.pack_fixture(scope)
 
     attrs =
       Enum.into(attrs, %{
         end_date: ~D[2026-01-31],
-        flock_quantity: 42,
-        flock_type: :bezerros,
         planned_period: 42,
         solta_id: solta.id,
+        pack_id: pack.id,
         start_date: ~D[2026-01-31],
         status: :planned
       })

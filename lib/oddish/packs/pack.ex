@@ -9,6 +9,8 @@ defmodule Oddish.Packs.Pack do
     field :status, Ecto.Enum, values: [:active, :inactive]
     field :org_id, :id
 
+    has_many :grazes, Oddish.Grazes.Graze
+
     timestamps(type: :utc_datetime)
   end
 

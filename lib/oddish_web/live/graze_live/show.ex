@@ -24,8 +24,10 @@ defmodule OddishWeb.GrazeLive.Show do
 
       <.list>
         <:item title="Solta">{@graze.solta.name}</:item>
-        <:item title="Tipo de rebanho">{String.capitalize(Atom.to_string(@graze.flock_type))}</:item>
-        <:item title="Quantidade de animais">{@graze.flock_quantity}</:item>
+        <:item title="Tipo de rebanho">
+          {String.capitalize(Atom.to_string(@graze.pack.flock_type))}
+        </:item>
+        <:item title="Quantidade de animais">{@graze.pack.animal_count}</:item>
         <:item title="Data inicial">{@graze.start_date}</:item>
         <:item title="Data final">{@graze.end_date}</:item>
         <:item title="Período planejado">{@graze.planned_period} dias</:item>
@@ -44,7 +46,10 @@ defmodule OddishWeb.GrazeLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Detalhes do lote")
-     |> assign(:graze, Grazes.get_graze!(socket.assigns.current_scope, id))}
+     |> assign(
+       :graze,
+       Grazes.get_graze!(socket.assigns.current_scope, id) |> Oddish.Repo.preload([:pack])
+     )}
   end
 
   @impl true

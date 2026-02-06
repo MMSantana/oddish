@@ -37,15 +37,15 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
         <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.flock_type))}
+          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
         </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
         <:action :let={{id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
           </div>
           <.link
-            phx-click={JS.push("start-graze", value: %{id: graze.id}) |> hide("##{id}")}
+            phx-click={JS.push("start_graze", value: %{id: graze.id}) |> hide("##{id}")}
             data-confirm="Começar o lote?"
           >
             Começar
@@ -79,15 +79,15 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
         <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.flock_type))}
+          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
         </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.flock_quantity}</:col>
+        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
         <:action :let={{id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
           </div>
           <.link
-            phx-click={JS.push("end-graze", value: %{id: graze.id}) |> hide("##{id}")}
+            phx-click={JS.push("end_graze", value: %{id: graze.id}) |> hide("##{id}")}
             data-confirm="Encerrar o lote?"
           >
             Encerrar
@@ -117,12 +117,11 @@ defmodule OddishWeb.GrazeLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Grazes")
+     |> assign(:page_title, "Lista de manejos")
      |> assign(:has_planned_grazes, length(planned_grazes) > 0)
      |> assign(:has_ongoing_grazes, length(ongoing_grazes) > 0)
      |> stream(:planned_grazes, planned_grazes)
-     |> stream(:ongoing_grazes, ongoing_grazes)
-     |> stream(:grazes, list_grazes(socket.assigns.current_scope))}
+     |> stream(:ongoing_grazes, ongoing_grazes)}
   end
 
   @impl true
@@ -134,7 +133,7 @@ defmodule OddishWeb.GrazeLive.Index do
   end
 
   @impl true
-  def handle_event("start-graze", %{"id" => id}, socket) do
+  def handle_event("start_graze", %{"id" => id}, socket) do
     graze = Grazes.get_graze!(socket.assigns.current_scope, id)
     {:ok, _} = Grazes.start_planned_graze(socket.assigns.current_scope, graze)
 
@@ -142,7 +141,7 @@ defmodule OddishWeb.GrazeLive.Index do
   end
 
   @impl true
-  def handle_event("end-graze", %{"id" => id}, socket) do
+  def handle_event("end_graze", %{"id" => id}, socket) do
     graze = Grazes.get_graze!(socket.assigns.current_scope, id)
     {:ok, _} = Grazes.end_ongoing_graze(socket.assigns.current_scope, graze)
 
@@ -158,15 +157,11 @@ defmodule OddishWeb.GrazeLive.Index do
      |> stream(:planned_grazes, list_planned_grazes(socket.assigns.current_scope), reset: true)}
   end
 
-  defp list_grazes(current_scope) do
-    Grazes.list_grazes(current_scope)
-  end
-
   defp list_planned_grazes(current_scope) do
-    Grazes.list_grazes_by_status(current_scope, :planned)
+    Grazes.list_grazes_by_status(current_scope, :planned) |> Oddish.Repo.preload([:pack])
   end
 
   defp list_ongoing_grazes(current_scope) do
-    Grazes.list_grazes_by_status(current_scope, :ongoing)
+    Grazes.list_grazes_by_status(current_scope, :ongoing) |> Oddish.Repo.preload([:pack])
   end
 end

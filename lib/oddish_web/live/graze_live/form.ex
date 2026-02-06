@@ -14,13 +14,12 @@ defmodule OddishWeb.GrazeLive.Form do
 
       <.form for={@form} id="graze-form" phx-change="validate" phx-submit="save">
         <.input
-          field={@form[:flock_type]}
+          field={@form[:pack_id]}
           type="select"
           prompt="Selecione um rebanho"
-          options={Ecto.Enum.values(Oddish.Grazes.Graze, :flock_type)}
+          options={@packs}
           label="Rebanho"
         />
-        <.input field={@form[:flock_quantity]} type="number" label="Quantidade" />
         <.input field={@form[:start_date]} type="date" label="Data inicial" />
         <.input field={@form[:end_date]} type="date" label="Data final" />
         <.input field={@form[:planned_period]} type="number" label="Período planejado" />
@@ -53,9 +52,14 @@ defmodule OddishWeb.GrazeLive.Form do
       Oddish.Soltas.list_soltas(socket.assigns.current_scope)
       |> Enum.map(fn solta -> {solta.name, solta.id} end)
 
+    packs =
+      Oddish.Packs.list_packs(socket.assigns.current_scope)
+      |> Enum.map(fn pack -> {pack.name, pack.id} end)
+
     {:ok,
      socket
      |> assign(:soltas, soltas)
+     |> assign(:packs, packs)
      |> assign(:return_to, return_to(params["return_to"]))
      |> apply_action(socket.assigns.live_action, params)}
   end
