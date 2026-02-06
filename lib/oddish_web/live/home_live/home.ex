@@ -10,6 +10,16 @@ defmodule OddishWeb.HomeLive.Home do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div>
         <.navigation_card
+          path={~p"/o/#{@current_scope.organization.slug}/grazes"}
+          icon="hero-chart-bar"
+          title="Manejo"
+          description="Faça a gestão de manejo"
+          color="bg-primary"
+        />
+      </div>
+
+      <div>
+        <.navigation_card
           path={~p"/o/#{@current_scope.organization.slug}/soltas"}
           icon="hero-globe-europe-africa"
           title="Soltas"
@@ -20,10 +30,10 @@ defmodule OddishWeb.HomeLive.Home do
 
       <div>
         <.navigation_card
-          path={~p"/o/#{@current_scope.organization.slug}/grazes"}
-          icon="hero-chart-bar"
-          title="Manejo"
-          description="Faça a gestão de manejo"
+          path={~p"/o/#{@current_scope.organization.slug}/packs"}
+          icon="hero-globe-europe-africa"
+          title="Lotes"
+          description="Adicione, remova e edite os lotes"
           color="bg-primary"
         />
       </div>
