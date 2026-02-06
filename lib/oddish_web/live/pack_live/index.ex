@@ -8,10 +8,10 @@ defmodule OddishWeb.PackLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Packs
+        Lotes
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/packs/new"}>
-            <.icon name="hero-plus" /> New Pack
+            <.icon name="hero-plus" /> Novo Lote
           </.button>
         </:actions>
       </.header>
@@ -23,22 +23,24 @@ defmodule OddishWeb.PackLive.Index do
           fn {_id, pack} -> JS.navigate(~p"/o/#{@current_scope.organization.slug}/packs/#{pack}") end
         }
       >
-        <:col :let={{_id, pack}} label="Name">{pack.name}</:col>
-        <:col :let={{_id, pack}} label="Flock type">{pack.flock_type}</:col>
-        <:col :let={{_id, pack}} label="Animal count">{pack.animal_count}</:col>
+        <:col :let={{_id, pack}} label="Nome">{pack.name}</:col>
+        <:col :let={{_id, pack}} label="Tipo de rebanho">{pack.flock_type}</:col>
+        <:col :let={{_id, pack}} label="Quantidade de animais">{pack.animal_count}</:col>
         <:col :let={{_id, pack}} label="Status">{pack.status}</:col>
         <:action :let={{_id, pack}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{pack}"}>Show</.link>
           </div>
-          <.link navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{pack}/edit"}>Edit</.link>
+          <.link navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{pack}/edit"}>
+            Editar
+          </.link>
         </:action>
         <:action :let={{id, pack}}>
           <.link
             phx-click={JS.push("delete", value: %{id: pack.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza que deseja excluir este lote?"
           >
-            Delete
+            Deletar
           </.link>
         </:action>
       </.table>
@@ -54,7 +56,7 @@ defmodule OddishWeb.PackLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Packs")
+     |> assign(:page_title, "Lotes")
      |> stream(:packs, list_packs(socket.assigns.current_scope))}
   end
 

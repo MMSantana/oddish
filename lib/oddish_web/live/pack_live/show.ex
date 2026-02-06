@@ -8,8 +8,7 @@ defmodule OddishWeb.PackLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Pack {@pack.id}
-        <:subtitle>This is a pack record from your database.</:subtitle>
+        Lote {@pack.id}
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/packs"}>
             <.icon name="hero-arrow-left" />
@@ -18,15 +17,15 @@ defmodule OddishWeb.PackLive.Show do
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{@pack}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Edit pack
+            <.icon name="hero-pencil-square" /> Editar lote
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@pack.name}</:item>
-        <:item title="Flock type">{@pack.flock_type}</:item>
-        <:item title="Animal count">{@pack.animal_count}</:item>
+        <:item title="Nome">{@pack.name}</:item>
+        <:item title="Tipo de rebanho">{@pack.flock_type}</:item>
+        <:item title="Quantidade de animais">{@pack.animal_count}</:item>
         <:item title="Status">{@pack.status}</:item>
       </.list>
     </Layouts.app>
@@ -41,7 +40,7 @@ defmodule OddishWeb.PackLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Pack")
+     |> assign(:page_title, "Lote #{id}")
      |> assign(:pack, Packs.get_pack!(socket.assigns.current_scope, id))}
   end
 
@@ -59,7 +58,7 @@ defmodule OddishWeb.PackLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current pack was deleted.")
+     |> put_flash(:error, "O lote foi deletado.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/packs")}
   end
 

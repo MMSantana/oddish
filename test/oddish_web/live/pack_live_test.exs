@@ -27,7 +27,7 @@ defmodule OddishWeb.PackLiveTest do
     test "lists all packs", %{conn: conn, pack: pack, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/packs")
 
-      assert html =~ "Listing Packs"
+      assert html =~ "Lotes"
       assert html =~ pack.name
     end
 
@@ -36,11 +36,11 @@ defmodule OddishWeb.PackLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Pack")
+               |> element("a", "Novo Lote")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/packs/new")
 
-      assert render(form_live) =~ "New Pack"
+      assert render(form_live) =~ "Novo Lote"
 
       assert form_live
              |> form("#pack-form", pack: @invalid_attrs)
@@ -53,7 +53,7 @@ defmodule OddishWeb.PackLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/packs")
 
       html = render(index_live)
-      assert html =~ "Pack created successfully"
+      assert html =~ "Lote criado com sucesso"
       assert html =~ "some name"
     end
 
@@ -62,11 +62,11 @@ defmodule OddishWeb.PackLiveTest do
 
       assert {:ok, form_live, _html} =
                index_live
-               |> element("#packs-#{pack.id} a", "Edit")
+               |> element("#packs-#{pack.id} a", "Editar")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/packs/#{pack}/edit")
 
-      assert render(form_live) =~ "Edit Pack"
+      assert render(form_live) =~ "Editar Lote"
 
       assert form_live
              |> form("#pack-form", pack: @invalid_attrs)
@@ -79,14 +79,14 @@ defmodule OddishWeb.PackLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/packs")
 
       html = render(index_live)
-      assert html =~ "Pack updated successfully"
+      assert html =~ "Lote atualizado com sucesso"
       assert html =~ "some updated name"
     end
 
     test "deletes pack in listing", %{conn: conn, pack: pack, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/packs")
 
-      assert index_live |> element("#packs-#{pack.id} a", "Delete") |> render_click()
+      assert index_live |> element("#packs-#{pack.id} a", "Deletar") |> render_click()
       refute has_element?(index_live, "#packs-#{pack.id}")
     end
   end
@@ -97,7 +97,7 @@ defmodule OddishWeb.PackLiveTest do
     test "displays pack", %{conn: conn, pack: pack, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/packs/#{pack}")
 
-      assert html =~ "Show Pack"
+      assert html =~ "Lote"
       assert html =~ pack.name
     end
 
@@ -106,14 +106,14 @@ defmodule OddishWeb.PackLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar lote")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/packs/#{pack}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Pack"
+      assert render(form_live) =~ "Editar Lote"
 
       assert form_live
              |> form("#pack-form", pack: @invalid_attrs)
@@ -126,7 +126,7 @@ defmodule OddishWeb.PackLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/packs/#{pack}")
 
       html = render(show_live)
-      assert html =~ "Pack updated successfully"
+      assert html =~ "Lote atualizado com sucesso"
       assert html =~ "some updated name"
     end
   end

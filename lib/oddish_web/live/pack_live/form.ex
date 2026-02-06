@@ -10,17 +10,22 @@ defmodule OddishWeb.PackLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage pack records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="pack-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:flock_type]} type="text" label="Flock type" />
-        <.input field={@form[:animal_count]} type="number" label="Animal count" />
-        <.input field={@form[:status]} type="text" label="Status" />
+        <.input field={@form[:name]} type="text" label="Nome" />
+        <.input field={@form[:flock_type]} type="text" label="Tipo de rebanho" />
+        <.input field={@form[:animal_count]} type="number" label="Quantidade de animais" />
+        <.input
+          field={@form[:status]}
+          type="select"
+          label="Status"
+          prompt="Selecione um status"
+          options={Ecto.Enum.values(Oddish.Packs.Pack, :status)}
+        />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Pack</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @pack)}>Cancel</.button>
+          <.button phx-disable-with="Saving..." variant="primary">Salvar</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @pack)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -42,7 +47,7 @@ defmodule OddishWeb.PackLive.Form do
     pack = Packs.get_pack!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Pack")
+    |> assign(:page_title, "Editar Lote")
     |> assign(:pack, pack)
     |> assign(:form, to_form(Packs.change_pack(socket.assigns.current_scope, pack)))
   end
@@ -51,7 +56,7 @@ defmodule OddishWeb.PackLive.Form do
     pack = %Pack{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Pack")
+    |> assign(:page_title, "Novo Lote")
     |> assign(:pack, pack)
     |> assign(:form, to_form(Packs.change_pack(socket.assigns.current_scope, pack)))
   end
@@ -71,7 +76,7 @@ defmodule OddishWeb.PackLive.Form do
       {:ok, pack} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Pack updated successfully")
+         |> put_flash(:info, "Lote atualizado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, pack)
          )}
@@ -86,7 +91,7 @@ defmodule OddishWeb.PackLive.Form do
       {:ok, pack} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Pack created successfully")
+         |> put_flash(:info, "Lote criado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, pack)
          )}
