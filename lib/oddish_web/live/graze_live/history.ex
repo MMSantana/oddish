@@ -8,10 +8,10 @@ defmodule OddishWeb.GrazeLive.History do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Grazes
+        Histórico de manejos
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
-            <.icon name="hero-plus" /> New Graze
+            <.icon name="hero-plus" /> Novo manejo
           </.button>
         </:actions>
       </.header>
@@ -45,7 +45,7 @@ defmodule OddishWeb.GrazeLive.History do
         <:action :let={{id, graze}}>
           <.link
             phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza que deseja deletar este manejo?"
           >
             Deletar
           </.link>

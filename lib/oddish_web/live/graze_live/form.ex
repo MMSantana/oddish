@@ -71,7 +71,7 @@ defmodule OddishWeb.GrazeLive.Form do
     graze = Grazes.get_graze!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Editar lote")
+    |> assign(:page_title, "Editar manejo")
     |> assign(:graze, graze)
     |> assign(:form, to_form(Grazes.change_graze(socket.assigns.current_scope, graze)))
   end
@@ -80,7 +80,7 @@ defmodule OddishWeb.GrazeLive.Form do
     graze = %Graze{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "Novo lote")
+    |> assign(:page_title, "Novo manejo")
     |> assign(:graze, graze)
     |> assign(:form, to_form(Grazes.change_graze(socket.assigns.current_scope, graze)))
   end
@@ -102,7 +102,7 @@ defmodule OddishWeb.GrazeLive.Form do
       {:ok, graze} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Lote atualizado")
+         |> put_flash(:info, "Manejo atualizado")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, graze)
          )}
@@ -117,7 +117,7 @@ defmodule OddishWeb.GrazeLive.Form do
       {:ok, graze} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Lote criado")
+         |> put_flash(:info, "Manejo criado")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, graze)
          )}

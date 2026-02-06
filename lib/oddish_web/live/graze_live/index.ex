@@ -8,7 +8,7 @@ defmodule OddishWeb.GrazeLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Manejo
+        Manejos
         <:actions>
           <.button
             variant="primary"
@@ -17,11 +17,11 @@ defmodule OddishWeb.GrazeLive.Index do
             <.icon name="hero-plus" /> Histórico
           </.button>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
-            <.icon name="hero-plus" /> Novo lote
+            <.icon name="hero-plus" /> Novo manejo
           </.button>
         </:actions>
       </.header>
-      <h1 :if={@has_planned_grazes}>Lotes planejados</h1>
+      <h1 :if={@has_planned_grazes}>Manejos planejados</h1>
       <.table
         :if={@has_planned_grazes}
         id="planned_grazes"
@@ -46,7 +46,7 @@ defmodule OddishWeb.GrazeLive.Index do
           </div>
           <.link
             phx-click={JS.push("start_graze", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Começar o lote?"
+            data-confirm="Começar o manejo?"
           >
             Começar
           </.link>
@@ -54,7 +54,7 @@ defmodule OddishWeb.GrazeLive.Index do
         <:action :let={{id, graze}}>
           <.link
             phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Quer mesmo deletar este lote"
+            data-confirm="Quer mesmo deletar este manejo?"
           >
             Delete
           </.link>
@@ -63,7 +63,7 @@ defmodule OddishWeb.GrazeLive.Index do
 
       <div :if={@has_ongoing_grazes && @has_planned_grazes} class="divider divider-primary"></div>
 
-      <h1 :if={@has_ongoing_grazes}>Lotes em andamento</h1>
+      <h1 :if={@has_ongoing_grazes}>Manejos em andamento</h1>
       <.table
         :if={@has_ongoing_grazes}
         id="ongoing_grazes"
@@ -88,7 +88,7 @@ defmodule OddishWeb.GrazeLive.Index do
           </div>
           <.link
             phx-click={JS.push("end_graze", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Encerrar o lote?"
+            data-confirm="Encerrar o manejo?"
           >
             Encerrar
           </.link>
@@ -96,7 +96,7 @@ defmodule OddishWeb.GrazeLive.Index do
         <:action :let={{id, graze}}>
           <.link
             phx-click={JS.push("delete", value: %{id: graze.id}) |> hide("##{id}")}
-            data-confirm="Quer mesmo deletar este lote?"
+            data-confirm="Quer mesmo deletar este manejo?"
           >
             Delete
           </.link>

@@ -8,7 +8,7 @@ defmodule OddishWeb.GrazeLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Lote {@graze.id}
+        Manejo {@graze.id}
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/grazes"}>
             <.icon name="hero-arrow-left" />
@@ -17,7 +17,7 @@ defmodule OddishWeb.GrazeLive.Show do
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{@graze}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Editar lote
+            <.icon name="hero-pencil-square" /> Editar manejo
           </.button>
         </:actions>
       </.header>
@@ -45,7 +45,7 @@ defmodule OddishWeb.GrazeLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Detalhes do lote")
+     |> assign(:page_title, "Detalhes do manejo")
      |> assign(
        :graze,
        Grazes.get_graze!(socket.assigns.current_scope, id) |> Oddish.Repo.preload([:pack])
@@ -66,7 +66,7 @@ defmodule OddishWeb.GrazeLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "O lote foi deletado")
+     |> put_flash(:error, "O manejo foi deletado")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/grazes")}
   end
 
