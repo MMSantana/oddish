@@ -8,8 +8,7 @@ defmodule OddishWeb.BovineLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Bovine {@bovine.id}
-        <:subtitle>This is a bovine record from your database.</:subtitle>
+        Bovino {@bovine.id}
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/bovines"}>
             <.icon name="hero-arrow-left" />
@@ -20,19 +19,19 @@ defmodule OddishWeb.BovineLive.Show do
               ~p"/o/#{@current_scope.organization.slug}/bovines/#{@bovine}/edit?return_to=show"
             }
           >
-            <.icon name="hero-pencil-square" /> Edit bovine
+            <.icon name="hero-pencil-square" /> Editar
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@bovine.name}</:item>
-        <:item title="Registration number">{@bovine.registration_number}</:item>
-        <:item title="Gender">{@bovine.gender}</:item>
-        <:item title="Mother">{@bovine.mother_id}</:item>
-        <:item title="Date of birth">{@bovine.date_of_birth}</:item>
-        <:item title="Description">{@bovine.description}</:item>
-        <:item title="Observation">{@bovine.observation}</:item>
+        <:item title="Nome">{@bovine.name}</:item>
+        <:item title="Número de registro">{@bovine.registration_number}</:item>
+        <:item title="Gênero">{@bovine.gender}</:item>
+        <:item title="Mãe">{@bovine.mother_id}</:item>
+        <:item title="Data de nascimento">{@bovine.date_of_birth}</:item>
+        <:item title="Descrição">{@bovine.description}</:item>
+        <:item title="Observação">{@bovine.observation}</:item>
       </.list>
     </Layouts.app>
     """
@@ -46,7 +45,7 @@ defmodule OddishWeb.BovineLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Bovine")
+     |> assign(:page_title, "Bovino")
      |> assign(:bovine, Cattle.get_bovine!(socket.assigns.current_scope, id))}
   end
 
@@ -64,7 +63,7 @@ defmodule OddishWeb.BovineLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current bovine was deleted.")
+     |> put_flash(:error, "O boi atual foi deletado.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/bovines")}
   end
 

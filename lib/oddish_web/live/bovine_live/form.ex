@@ -10,21 +10,32 @@ defmodule OddishWeb.BovineLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage bovine records in your database.</:subtitle>
       </.header>
 
       <.form for={@form} id="bovine-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:registration_number]} type="text" label="Registration number" />
-        <.input field={@form[:gender]} type="text" label="Gender" />
-        <.input field={@form[:mother_id]} type="text" label="Mother" />
+        <.input field={@form[:name]} type="text" label="Nome" />
+        <.input field={@form[:registration_number]} type="text" label="Número de registro" />
+        <.input
+          field={@form[:gender]}
+          type="select"
+          options={Ecto.Enum.values(Oddish.Cattle.Bovine, :gender)}
+          prompt="Selecione um gênero"
+          label="Gênero"
+        />
+        <.input
+          field={@form[:mother_id]}
+          type="select"
+          options={@mothers}
+          prompt="Selecione uma mãe"
+          label="Mãe"
+        />
         <.input field={@form[:status]} type="text" label="Status" />
-        <.input field={@form[:date_of_birth]} type="date" label="Date of birth" />
-        <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:observation]} type="textarea" label="Observation" />
+        <.input field={@form[:date_of_birth]} type="date" label="Data de nascimento" />
+        <.input field={@form[:description]} type="text" label="Descrição" />
+        <.input field={@form[:observation]} type="textarea" label="Observação" />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Bovine</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @bovine)}>Cancel</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @bovine)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -35,6 +46,7 @@ defmodule OddishWeb.BovineLive.Form do
   def mount(params, _session, socket) do
     {:ok,
      socket
+     |> assign(:mothers, Cattle.list_cows(socket.assigns.current_scope))
      |> assign(:return_to, return_to(params["return_to"]))
      |> apply_action(socket.assigns.live_action, params)}
   end
@@ -46,7 +58,7 @@ defmodule OddishWeb.BovineLive.Form do
     bovine = Cattle.get_bovine!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Bovine")
+    |> assign(:page_title, "Editar Bovino")
     |> assign(:bovine, bovine)
     |> assign(:form, to_form(Cattle.change_bovine(socket.assigns.current_scope, bovine)))
   end
@@ -55,7 +67,7 @@ defmodule OddishWeb.BovineLive.Form do
     bovine = %Bovine{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Bovine")
+    |> assign(:page_title, "Novo Bovino")
     |> assign(:bovine, bovine)
     |> assign(:form, to_form(Cattle.change_bovine(socket.assigns.current_scope, bovine)))
   end
@@ -77,7 +89,7 @@ defmodule OddishWeb.BovineLive.Form do
       {:ok, bovine} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Bovine updated successfully")
+         |> put_flash(:info, "Bovino editado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, bovine)
          )}
@@ -92,7 +104,7 @@ defmodule OddishWeb.BovineLive.Form do
       {:ok, bovine} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Bovine created successfully")
+         |> put_flash(:info, "Bovino criado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, bovine)
          )}

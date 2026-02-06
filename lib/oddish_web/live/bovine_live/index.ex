@@ -8,10 +8,10 @@ defmodule OddishWeb.BovineLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Bovines
+        Bovinos
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/bovines/new"}>
-            <.icon name="hero-plus" /> New Bovine
+            <.icon name="hero-plus" /> Novo Bovino
           </.button>
         </:actions>
       </.header>
@@ -25,13 +25,13 @@ defmodule OddishWeb.BovineLive.Index do
           end
         }
       >
-        <:col :let={{_id, bovine}} label="Name">{bovine.name}</:col>
-        <:col :let={{_id, bovine}} label="Registration number">{bovine.registration_number}</:col>
-        <:col :let={{_id, bovine}} label="Gender">{bovine.gender}</:col>
-        <:col :let={{_id, bovine}} label="Mother">{bovine.mother_id}</:col>
-        <:col :let={{_id, bovine}} label="Date of birth">{bovine.date_of_birth}</:col>
-        <:col :let={{_id, bovine}} label="Description">{bovine.description}</:col>
-        <:col :let={{_id, bovine}} label="Observation">{bovine.observation}</:col>
+        <:col :let={{_id, bovine}} label="Nome">{bovine.name}</:col>
+        <:col :let={{_id, bovine}} label="Número de registro">{bovine.registration_number}</:col>
+        <:col :let={{_id, bovine}} label="Gênero">{bovine.gender}</:col>
+        <:col :let={{_id, bovine}} label="Mãe">{bovine.mother_id}</:col>
+        <:col :let={{_id, bovine}} label="Data de nascimento">{bovine.date_of_birth}</:col>
+        <:col :let={{_id, bovine}} label="Descrição">{bovine.description}</:col>
+        <:col :let={{_id, bovine}} label="Observação">{bovine.observation}</:col>
         <:action :let={{_id, bovine}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/bovines/#{bovine}"}>
@@ -39,15 +39,15 @@ defmodule OddishWeb.BovineLive.Index do
             </.link>
           </div>
           <.link navigate={~p"/o/#{@current_scope.organization.slug}/bovines/#{bovine}/edit"}>
-            Edit
+            Editar
           </.link>
         </:action>
         <:action :let={{id, bovine}}>
           <.link
             phx-click={JS.push("delete", value: %{id: bovine.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza que deseja excluir este boi?"
           >
-            Delete
+            Deletar
           </.link>
         </:action>
       </.table>
@@ -63,7 +63,7 @@ defmodule OddishWeb.BovineLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Bovines")
+     |> assign(:page_title, "Bovinos")
      |> stream(:bovines, list_bovines(socket.assigns.current_scope))}
   end
 

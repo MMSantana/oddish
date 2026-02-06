@@ -44,6 +44,10 @@ defmodule Oddish.Cattle do
     Repo.all_by(Bovine, org_id: scope.organization.id)
   end
 
+  def list_cows(%Scope{} = scope) do
+    Repo.all_by(Bovine, org_id: scope.organization.id, gender: :female)
+  end
+
   @doc """
   Gets a single bovine.
 
