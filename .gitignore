@@ -31,6 +31,15 @@ oddish-*.tar
 # Ignore digested assets cache.
 /priv/static/cache_manifest.json
 
+# Ignore priv/static/favicon.ico
+/priv/static/favicon-*
+
+# Ignore priv/static/images
+/priv/static/images
+
+# Ignore priv/static/robots.txt
+/priv/static/robots*
+
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/
