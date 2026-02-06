@@ -24,6 +24,7 @@ defmodule OddishWeb.GrazeLive.Show do
 
       <.list>
         <:item title="Solta">{@graze.solta.name}</:item>
+        <:item title="Lote">{@graze.pack.name}</:item>
         <:item title="Tipo de rebanho">
           {String.capitalize(Atom.to_string(@graze.pack.flock_type))}
         </:item>
@@ -32,6 +33,7 @@ defmodule OddishWeb.GrazeLive.Show do
         <:item title="Data final">{@graze.end_date}</:item>
         <:item title="Período planejado">{@graze.planned_period} dias</:item>
         <:item title="Status">{translate_status(@graze.status)}</:item>
+        <:item title="Estado"><.on_time? graze={@graze} /></:item>
       </.list>
     </Layouts.app>
     """
@@ -80,4 +82,22 @@ defmodule OddishWeb.GrazeLive.Show do
   defp translate_status(:finished), do: "Encerrado"
   defp translate_status(:canceled), do: "Cancelado"
   defp translate_status(_), do: "Desconhecido"
+
+  defp on_time?(assigns) do
+    ~H"""
+    <div class={
+      cond do
+        @graze.end_date == nil ->
+          "badge badge-warning"
+
+        Date.after?(Date.add(@graze.start_date, @graze.planned_period), @graze.end_date) ->
+          "badge badge-success"
+
+        true ->
+          "badge badge-error"
+      end
+    }>
+    </div>
+    """
+  end
 end

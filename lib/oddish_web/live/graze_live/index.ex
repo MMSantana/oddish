@@ -35,7 +35,8 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Solta">{graze.solta.name}</:col>
         <:col :let={{_id, graze}} label="Data inicial">{graze.start_date}</:col>
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
-        <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Estado"><.on_time_to_start graze={graze} /></:col>
+        <:col :let={{_id, graze}} label="Lote">{graze.pack.name}</:col>
         <:col :let={{_id, graze}} label="Tipo">
           {String.capitalize(Atom.to_string(graze.pack.flock_type))}
         </:col>
@@ -77,7 +78,8 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Solta">{graze.solta.name}</:col>
         <:col :let={{_id, graze}} label="Data inicial">{graze.start_date}</:col>
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
-        <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
+        <:col :let={{_id, graze}} label="Estado"><.on_time_to_end graze={graze} /></:col>
+        <:col :let={{_id, graze}} label="Lote">{graze.pack.name}</:col>
         <:col :let={{_id, graze}} label="Tipo">
           {String.capitalize(Atom.to_string(graze.pack.flock_type))}
         </:col>
@@ -163,5 +165,31 @@ defmodule OddishWeb.GrazeLive.Index do
 
   defp list_ongoing_grazes(current_scope) do
     Grazes.list_grazes_by_status(current_scope, :ongoing) |> Oddish.Repo.preload([:pack])
+  end
+
+  defp on_time_to_start(assigns) do
+    ~H"""
+    <div class={
+      if Date.after?(@graze.start_date, Date.utc_today()) do
+        "badge badge-success"
+      else
+        "badge badge-error"
+      end
+    }>
+    </div>
+    """
+  end
+
+  defp on_time_to_end(assigns) do
+    ~H"""
+    <div class={
+      if Date.after?(Date.add(@graze.start_date, @graze.planned_period), Date.utc_today()) do
+        "badge badge-success"
+      else
+        "badge badge-error"
+      end
+    }>
+    </div>
+    """
   end
 end
