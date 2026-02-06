@@ -29,7 +29,13 @@ defmodule OddishWeb.BovineLive.Form do
           prompt="Selecione uma mãe"
           label="Mãe"
         />
-        <.input field={@form[:status]} type="text" label="Status" />
+        <.input
+          field={@form[:status]}
+          type="select"
+          options={Ecto.Enum.values(Oddish.Cattle.Bovine, :status)}
+          prompt="Selecione um status"
+          label="Status"
+        />
         <.input field={@form[:date_of_birth]} type="date" label="Data de nascimento" />
         <.input field={@form[:description]} type="text" label="Descrição" />
         <.input field={@form[:observation]} type="textarea" label="Observação" />
@@ -44,9 +50,13 @@ defmodule OddishWeb.BovineLive.Form do
 
   @impl true
   def mount(params, _session, socket) do
+    mothers =
+      Cattle.list_cows(socket.assigns.current_scope)
+      |> Enum.map(fn mother -> {mother.name, mother.id} end)
+
     {:ok,
      socket
-     |> assign(:mothers, Cattle.list_cows(socket.assigns.current_scope))
+     |> assign(:mothers, mothers)
      |> assign(:return_to, return_to(params["return_to"]))
      |> apply_action(socket.assigns.live_action, params)}
   end
