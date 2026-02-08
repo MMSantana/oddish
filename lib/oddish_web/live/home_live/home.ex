@@ -42,9 +42,9 @@ defmodule OddishWeb.HomeLive.Home do
         <.navigation_card
           path={~p"/o/#{@current_scope.organization.slug}/bovines"}
           icon="hero-chart-bar"
-          title="Bovinos"
-          description="Aqui você pode gerenciar os bois. Para um nascimento, basta criar um boi com o status ativo.
-          Para registrar uma morte, basta criar um boi com o status morto."
+          title="Animais"
+          description="Aqui você pode gerenciar os animais. Para um nascimento, basta criar um animal com o status ativo.
+          Para registrar uma morte, basta criar um animal com o status morto."
           color="bg-primary"
         />
       </div>

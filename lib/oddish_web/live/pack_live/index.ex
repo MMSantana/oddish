@@ -24,9 +24,11 @@ defmodule OddishWeb.PackLive.Index do
         }
       >
         <:col :let={{_id, pack}} label="Nome">{pack.name}</:col>
-        <:col :let={{_id, pack}} label="Tipo de rebanho">{pack.flock_type}</:col>
+        <:col :let={{_id, pack}} label="Tipo de rebanho">
+          {Oddish.Packs.Pack.present_flock_type(pack.flock_type)}
+        </:col>
         <:col :let={{_id, pack}} label="Quantidade de animais">{pack.animal_count}</:col>
-        <:col :let={{_id, pack}} label="Status">{pack.status}</:col>
+        <:col :let={{_id, pack}} label="Status">{Oddish.Packs.Pack.present_status(pack.status)}</:col>
         <:action :let={{_id, pack}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{pack}"}>Show</.link>

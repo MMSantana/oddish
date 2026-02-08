@@ -32,7 +32,7 @@ defmodule OddishWeb.GrazeLive.Show do
         <:item title="Data inicial">{@graze.start_date}</:item>
         <:item title="Data final">{@graze.end_date}</:item>
         <:item title="Período planejado">{@graze.planned_period} dias</:item>
-        <:item title="Status">{translate_status(@graze.status)}</:item>
+        <:item title="Status">{Oddish.Grazes.Graze.present_status(@graze.status)}</:item>
         <:item title="Estado"><.on_time? graze={@graze} /></:item>
       </.list>
     </Layouts.app>
@@ -76,12 +76,6 @@ defmodule OddishWeb.GrazeLive.Show do
       when type in [:created, :updated, :deleted] do
     {:noreply, socket}
   end
-
-  defp translate_status(:planned), do: "Planejado"
-  defp translate_status(:ongoing), do: "Ativo"
-  defp translate_status(:finished), do: "Encerrado"
-  defp translate_status(:canceled), do: "Cancelado"
-  defp translate_status(_), do: "Desconhecido"
 
   defp on_time?(assigns) do
     ~H"""

@@ -24,9 +24,11 @@ defmodule OddishWeb.PackLive.Show do
 
       <.list>
         <:item title="Nome">{@pack.name}</:item>
-        <:item title="Tipo de rebanho">{@pack.flock_type}</:item>
+        <:item title="Tipo de rebanho">
+          {Oddish.Packs.Pack.present_flock_type(@pack.flock_type)}
+        </:item>
         <:item title="Quantidade de animais">{@pack.animal_count}</:item>
-        <:item title="Status">{@pack.status}</:item>
+        <:item title="Status">{Oddish.Packs.Pack.present_status(@pack.status)}</:item>
       </.list>
     </Layouts.app>
     """

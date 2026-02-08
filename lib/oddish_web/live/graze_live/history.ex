@@ -30,12 +30,10 @@ defmodule OddishWeb.GrazeLive.History do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Data final">{graze.end_date}</:col>
         <:col :let={{_id, graze}} label="Lote">{graze.pack.name}</:col>
-        <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
+        <:col :let={{_id, graze}} label="Status">
+          {Oddish.Grazes.Graze.present_status(graze.status)}
         </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
-        <:col :let={{_id, graze}} label="Status">{graze.status}</:col>
-        <:col :let={{_id, graze}} label="Estado"><.on_time? graze={graze} /></:col>
+        <:col :let={{_id, graze}} label="Terminado em dia?"><.on_time? graze={graze} /></:col>
         <:action :let={{_id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>

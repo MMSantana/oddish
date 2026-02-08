@@ -8,7 +8,7 @@ defmodule OddishWeb.BovineLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Bovino {@bovine.id}
+        Animal {@bovine.id}
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/bovines"}>
             <.icon name="hero-arrow-left" />
@@ -27,7 +27,7 @@ defmodule OddishWeb.BovineLive.Show do
       <.list>
         <:item title="Nome">{@bovine.name}</:item>
         <:item title="Número de registro">{@bovine.registration_number}</:item>
-        <:item title="Gênero">{@bovine.gender}</:item>
+        <:item title="Gênero">{Oddish.Cattle.Bovine.present_gender(@bovine.gender)}</:item>
         <:item title="Mãe">{@bovine.mother_id}</:item>
         <:item title="Data de nascimento">{@bovine.date_of_birth}</:item>
         <:item title="Descrição">{@bovine.description}</:item>
@@ -45,7 +45,7 @@ defmodule OddishWeb.BovineLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Bovino")
+     |> assign(:page_title, "Animal")
      |> assign(:bovine, Cattle.get_bovine!(socket.assigns.current_scope, id))}
   end
 
@@ -63,7 +63,7 @@ defmodule OddishWeb.BovineLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "O boi atual foi deletado.")
+     |> put_flash(:error, "O animal atual foi deletado.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/bovines")}
   end
 

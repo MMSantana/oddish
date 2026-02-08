@@ -37,10 +37,6 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Estado"><.on_time_to_start graze={graze} /></:col>
         <:col :let={{_id, graze}} label="Lote">{graze.pack.name}</:col>
-        <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
-        </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
         <:action :let={{id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>
@@ -80,10 +76,6 @@ defmodule OddishWeb.GrazeLive.Index do
         <:col :let={{_id, graze}} label="Duração planejada">{graze.planned_period} dias</:col>
         <:col :let={{_id, graze}} label="Estado"><.on_time_to_end graze={graze} /></:col>
         <:col :let={{_id, graze}} label="Lote">{graze.pack.name}</:col>
-        <:col :let={{_id, graze}} label="Tipo">
-          {String.capitalize(Atom.to_string(graze.pack.flock_type))}
-        </:col>
-        <:col :let={{_id, graze}} label="Quantidade">{graze.pack.animal_count}</:col>
         <:action :let={{id, graze}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/grazes/#{graze}"}>Show</.link>

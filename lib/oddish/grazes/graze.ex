@@ -35,4 +35,13 @@ defmodule Oddish.Grazes.Graze do
     ])
     |> put_change(:org_id, organization_scope.organization.id)
   end
+
+  def present_status(status) do
+    case status do
+      :planned -> "Planejado"
+      :ongoing -> "Em andamento"
+      :finished -> "Finalizado"
+      :canceled -> "Cancelado"
+    end
+  end
 end

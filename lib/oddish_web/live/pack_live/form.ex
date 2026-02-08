@@ -14,17 +14,31 @@ defmodule OddishWeb.PackLive.Form do
 
       <.form for={@form} id="pack-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Nome" />
-        <.input field={@form[:flock_type]} type="text" label="Tipo de rebanho" />
+        <.input
+          field={@form[:flock_type]}
+          type="select"
+          label="Tipo de rebanho"
+          prompt="--"
+          options={
+            Ecto.Enum.values(Oddish.Packs.Pack, :flock_type)
+            |> Enum.map(fn flock_type ->
+              {Oddish.Packs.Pack.present_flock_type(flock_type), flock_type}
+            end)
+          }
+        />
         <.input field={@form[:animal_count]} type="number" label="Quantidade de animais" />
         <.input
           field={@form[:status]}
           type="select"
           label="Status"
-          prompt="Selecione um status"
-          options={Ecto.Enum.values(Oddish.Packs.Pack, :status)}
+          prompt="--"
+          options={
+            Ecto.Enum.values(Oddish.Packs.Pack, :status)
+            |> Enum.map(fn status -> {Oddish.Packs.Pack.present_status(status), status} end)
+          }
         />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Salvar</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
           <.button navigate={return_path(@current_scope, @return_to, @pack)}>Cancelar</.button>
         </footer>
       </.form>

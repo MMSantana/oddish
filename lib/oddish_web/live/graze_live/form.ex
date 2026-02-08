@@ -16,7 +16,7 @@ defmodule OddishWeb.GrazeLive.Form do
         <.input
           field={@form[:pack_id]}
           type="select"
-          prompt="Selecione um rebanho"
+          prompt="--"
           options={@packs}
           label="Rebanho"
         />
@@ -26,14 +26,17 @@ defmodule OddishWeb.GrazeLive.Form do
         <.input
           field={@form[:status]}
           type="select"
-          prompt="Selecione um status"
-          options={Ecto.Enum.values(Oddish.Grazes.Graze, :status)}
+          prompt="--"
+          options={
+            Ecto.Enum.values(Oddish.Grazes.Graze, :status)
+            |> Enum.map(fn status -> {Oddish.Grazes.Graze.present_status(status), status} end)
+          }
           label="Status"
         />
         <.input
           field={@form[:solta_id]}
           type="select"
-          prompt="Selecione uma solta"
+          prompt="--"
           options={@soltas}
           label="Solta"
         />

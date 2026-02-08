@@ -34,4 +34,20 @@ defmodule Oddish.Cattle.Bovine do
     |> validate_required([:name, :status, :gender])
     |> put_change(:org_id, organization_scope.organization.id)
   end
+
+  def present_gender(gender) do
+    case gender do
+      :male -> "Macho"
+      :female -> "Fêmea"
+    end
+  end
+
+  def present_status(status) do
+    case status do
+      :active -> "Ativo"
+      :sold -> "Vendido"
+      :deceased -> "Morto"
+      :lost -> "Perdido"
+    end
+  end
 end

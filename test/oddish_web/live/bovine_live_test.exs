@@ -44,7 +44,7 @@ defmodule OddishWeb.BovineLiveTest do
     test "lists all bovines", %{conn: conn, bovine: bovine, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/bovines")
 
-      assert html =~ "Bovinos"
+      assert html =~ "Animais"
       assert html =~ bovine.name
     end
 
@@ -53,11 +53,11 @@ defmodule OddishWeb.BovineLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "Novo Bovino")
+               |> element("a", "Novo")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/bovines/new")
 
-      assert render(form_live) =~ "Novo Bovino"
+      assert render(form_live) =~ "Novo"
 
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
@@ -70,7 +70,7 @@ defmodule OddishWeb.BovineLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/bovines")
 
       html = render(index_live)
-      assert html =~ "Bovino criado com sucesso"
+      assert html =~ "Animal criado com sucesso"
       assert html =~ "some name"
     end
 
@@ -96,7 +96,7 @@ defmodule OddishWeb.BovineLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/bovines")
 
       html = render(index_live)
-      assert html =~ "Bovino editado com sucesso"
+      assert html =~ "Animal editado com sucesso"
       assert html =~ "some updated name"
     end
 
@@ -114,7 +114,7 @@ defmodule OddishWeb.BovineLiveTest do
     test "displays bovine", %{conn: conn, bovine: bovine, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/bovines/#{bovine}")
 
-      assert html =~ "Bovino"
+      assert html =~ "Animal"
       assert html =~ bovine.name
     end
 
@@ -123,14 +123,14 @@ defmodule OddishWeb.BovineLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/bovines/#{bovine}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Editar Bovino"
+      assert render(form_live) =~ "Editar"
 
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
@@ -143,7 +143,7 @@ defmodule OddishWeb.BovineLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/bovines/#{bovine}")
 
       html = render(show_live)
-      assert html =~ "Bovino editado com sucesso"
+      assert html =~ "Animal editado com sucesso"
       assert html =~ "some updated name"
     end
   end

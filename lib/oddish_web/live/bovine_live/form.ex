@@ -18,22 +18,28 @@ defmodule OddishWeb.BovineLive.Form do
         <.input
           field={@form[:gender]}
           type="select"
-          options={Ecto.Enum.values(Oddish.Cattle.Bovine, :gender)}
-          prompt="Selecione um gênero"
+          options={
+            Ecto.Enum.values(Oddish.Cattle.Bovine, :gender)
+            |> Enum.map(fn gender -> {Oddish.Cattle.Bovine.present_gender(gender), gender} end)
+          }
+          prompt="--"
           label="Gênero"
         />
         <.input
           field={@form[:mother_id]}
           type="select"
           options={@mothers}
-          prompt="Selecione uma mãe"
+          prompt="--"
           label="Mãe"
         />
         <.input
           field={@form[:status]}
           type="select"
-          options={Ecto.Enum.values(Oddish.Cattle.Bovine, :status)}
-          prompt="Selecione um status"
+          options={
+            Ecto.Enum.values(Oddish.Cattle.Bovine, :status)
+            |> Enum.map(fn status -> {Oddish.Cattle.Bovine.present_status(status), status} end)
+          }
+          prompt="--"
           label="Status"
         />
         <.input field={@form[:date_of_birth]} type="date" label="Data de nascimento" />
@@ -68,7 +74,7 @@ defmodule OddishWeb.BovineLive.Form do
     bovine = Cattle.get_bovine!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Editar Bovino")
+    |> assign(:page_title, "Editar")
     |> assign(:bovine, bovine)
     |> assign(:form, to_form(Cattle.change_bovine(socket.assigns.current_scope, bovine)))
   end
@@ -77,7 +83,7 @@ defmodule OddishWeb.BovineLive.Form do
     bovine = %Bovine{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "Novo Bovino")
+    |> assign(:page_title, "Novo animal")
     |> assign(:bovine, bovine)
     |> assign(:form, to_form(Cattle.change_bovine(socket.assigns.current_scope, bovine)))
   end
@@ -99,7 +105,7 @@ defmodule OddishWeb.BovineLive.Form do
       {:ok, bovine} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Bovino editado com sucesso")
+         |> put_flash(:info, "Animal editado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, bovine)
          )}
@@ -114,7 +120,7 @@ defmodule OddishWeb.BovineLive.Form do
       {:ok, bovine} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Bovino criado com sucesso")
+         |> put_flash(:info, "Animal criado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, bovine)
          )}

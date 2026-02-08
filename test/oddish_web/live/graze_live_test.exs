@@ -29,11 +29,10 @@ defmodule OddishWeb.GrazeLiveTest do
   describe "Index" do
     setup [:create_graze]
 
-    test "lists all grazes", %{conn: conn, graze: graze, scope: scope} do
+    test "lists all grazes", %{conn: conn, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/grazes")
 
       assert html =~ "Lista de manejos"
-      assert html =~ String.capitalize(Atom.to_string(graze.pack.flock_type))
     end
 
     test "saves new graze", %{conn: conn, scope: scope} do
@@ -70,7 +69,6 @@ defmodule OddishWeb.GrazeLiveTest do
 
       html = render(index_live)
       assert html =~ "Manejo criado"
-      assert html =~ "Bezerros"
     end
 
     test "updates graze in listing", %{conn: conn, graze: graze, scope: scope} do
@@ -96,7 +94,6 @@ defmodule OddishWeb.GrazeLiveTest do
 
       html = render(index_live)
       assert html =~ "Manejo atualizado"
-      assert html =~ "Bezerros"
     end
 
     test "deletes graze in listing", %{conn: conn, graze: graze, scope: scope} do

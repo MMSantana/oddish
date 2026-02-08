@@ -21,4 +21,20 @@ defmodule Oddish.Packs.Pack do
     |> validate_required([:name, :flock_type, :animal_count, :status])
     |> put_change(:org_id, organization_scope.organization.id)
   end
+
+  def present_status(status) do
+    case status do
+      :active -> "Ativo"
+      :inactive -> "Inativo"
+    end
+  end
+
+  def present_flock_type(flock_type) do
+    case flock_type do
+      :bezerros -> "Bezerros"
+      :bois -> "Bois"
+      :novilhas -> "Novilhas"
+      :vacas -> "Vacas"
+    end
+  end
 end
