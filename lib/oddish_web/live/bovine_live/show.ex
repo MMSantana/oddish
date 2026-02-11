@@ -28,7 +28,7 @@ defmodule OddishWeb.BovineLive.Show do
         <:item title="Nome">{@bovine.name}</:item>
         <:item title="Número de registro">{@bovine.registration_number}</:item>
         <:item title="Gênero">{Oddish.Cattle.Bovine.present_gender(@bovine.gender)}</:item>
-        <:item title="Mãe">{@bovine.mother_id}</:item>
+        <:item title="Mãe">{display_mother(@bovine)}</:item>
         <:item title="Lote">{display_pack(@bovine)}</:item>
         <:item title="Data de nascimento">{@bovine.date_of_birth}</:item>
         <:item title="Descrição">{@bovine.description}</:item>
@@ -49,7 +49,8 @@ defmodule OddishWeb.BovineLive.Show do
      |> assign(:page_title, "Animal")
      |> assign(
        :bovine,
-       Cattle.get_bovine!(socket.assigns.current_scope, id) |> Oddish.Repo.preload(:pack)
+       Cattle.get_bovine!(socket.assigns.current_scope, id)
+       |> Oddish.Repo.preload([:pack, :mother])
      )}
   end
 
@@ -77,5 +78,11 @@ defmodule OddishWeb.BovineLive.Show do
   end
 
   defp display_pack(%{pack: %{name: name}}), do: name
-  defp display_pack(_), do: "Nenhum"
+  defp display_pack(_), do: "--"
+
+  defp display_mother(%{mother: %{name: name, registration_number: registration_number}}) do
+    "#{name} - #{registration_number}"
+  end
+
+  defp display_mother(_), do: "--"
 end

@@ -30,7 +30,6 @@ defmodule OddishWeb.BovineLive.Index do
         <:col :let={{_id, bovine}} label="Gênero">
           {Oddish.Cattle.Bovine.present_gender(bovine.gender)}
         </:col>
-        <:col :let={{_id, bovine}} label="Mãe">{bovine.mother_id}</:col>
         <:col :let={{_id, bovine}} label="Lote">{display_pack(bovine)}</:col>
         <:col :let={{_id, bovine}} label="Data de nascimento">{bovine.date_of_birth}</:col>
         <:action :let={{_id, bovine}}>
@@ -87,5 +86,5 @@ defmodule OddishWeb.BovineLive.Index do
   end
 
   defp display_pack(%{pack: %{name: name}}), do: name
-  defp display_pack(_), do: "Nenhum"
+  defp display_pack(_), do: "--"
 end
