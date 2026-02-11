@@ -29,6 +29,7 @@ defmodule OddishWeb.PackLive.Show do
         </:item>
         <:item title="Quantidade de animais">{@pack.animal_count}</:item>
         <:item title="Status">{Oddish.Packs.Pack.present_status(@pack.status)}</:item>
+        <:item title="Observações">{@pack.observation}</:item>
       </.list>
     </Layouts.app>
     """

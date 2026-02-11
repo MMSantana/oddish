@@ -37,6 +37,7 @@ defmodule OddishWeb.PackLive.Form do
             |> Enum.map(fn status -> {Oddish.Packs.Pack.present_status(status), status} end)
           }
         />
+        <.input field={@form[:observation]} type="textarea" label="Observações" />
         <footer>
           <.button phx-disable-with="Salvando..." variant="primary">Salvar</.button>
           <.button navigate={return_path(@current_scope, @return_to, @pack)}>Cancelar</.button>

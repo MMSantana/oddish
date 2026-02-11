@@ -377,6 +377,7 @@ defmodule OddishWeb.CoreComponents do
   """
   slot :item, required: true do
     attr :title, :string, required: true
+    attr :href, :any
   end
 
   def list(assigns) do
