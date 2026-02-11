@@ -44,6 +44,10 @@ defmodule Oddish.Packs do
     Repo.all_by(Pack, org_id: scope.organization.id)
   end
 
+  def list_active_packs(%Scope{} = scope) do
+    Repo.all_by(Pack, org_id: scope.organization.id, status: :active)
+  end
+
   @doc """
   Gets a single pack.
 

@@ -29,6 +29,7 @@ defmodule OddishWeb.BovineLive.Show do
         <:item title="Número de registro">{@bovine.registration_number}</:item>
         <:item title="Gênero">{Oddish.Cattle.Bovine.present_gender(@bovine.gender)}</:item>
         <:item title="Mãe">{@bovine.mother_id}</:item>
+        <:item title="Lote">{display_pack(@bovine)}</:item>
         <:item title="Data de nascimento">{@bovine.date_of_birth}</:item>
         <:item title="Descrição">{@bovine.description}</:item>
         <:item title="Observação">{@bovine.observation}</:item>
@@ -46,7 +47,10 @@ defmodule OddishWeb.BovineLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Animal")
-     |> assign(:bovine, Cattle.get_bovine!(socket.assigns.current_scope, id))}
+     |> assign(
+       :bovine,
+       Cattle.get_bovine!(socket.assigns.current_scope, id) |> Oddish.Repo.preload(:pack)
+     )}
   end
 
   @impl true
@@ -71,4 +75,7 @@ defmodule OddishWeb.BovineLive.Show do
       when type in [:created, :updated, :deleted] do
     {:noreply, socket}
   end
+
+  defp display_pack(%{pack: %{name: name}}), do: name
+  defp display_pack(_), do: "Nenhum"
 end

@@ -8,6 +8,8 @@ defmodule Oddish.CattleFixtures do
   Generate a bovine.
   """
   def bovine_fixture(scope, attrs \\ %{}) do
+    pack = Oddish.PacksFixtures.pack_fixture(scope)
+
     attrs =
       Enum.into(attrs, %{
         date_of_birth: ~D[2026-02-04],
@@ -17,6 +19,7 @@ defmodule Oddish.CattleFixtures do
         name: "some name",
         observation: "some observation",
         registration_number: "some registration_number",
+        pack_id: pack.id,
         status: :active
       })
 

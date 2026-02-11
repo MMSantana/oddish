@@ -42,6 +42,13 @@ defmodule OddishWeb.BovineLive.Form do
           prompt="--"
           label="Status"
         />
+        <.input
+          field={@form[:pack_id]}
+          type="select"
+          options={@active_packs}
+          prompt="--"
+          label="Lote"
+        />
         <.input field={@form[:date_of_birth]} type="date" label="Data de nascimento" />
         <.input field={@form[:description]} type="text" label="Descrição" />
         <.input field={@form[:observation]} type="textarea" label="Observação" />
@@ -60,9 +67,14 @@ defmodule OddishWeb.BovineLive.Form do
       Cattle.list_cows(socket.assigns.current_scope)
       |> Enum.map(fn mother -> {mother.name, mother.id} end)
 
+    active_packs =
+      Oddish.Packs.list_active_packs(socket.assigns.current_scope)
+      |> Enum.map(fn pack -> {pack.name, pack.id} end)
+
     {:ok,
      socket
      |> assign(:mothers, mothers)
+     |> assign(:active_packs, active_packs)
      |> assign(:return_to, return_to(params["return_to"]))
      |> apply_action(socket.assigns.live_action, params)}
   end

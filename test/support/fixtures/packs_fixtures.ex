@@ -13,7 +13,8 @@ defmodule Oddish.PacksFixtures do
         animal_count: 42,
         flock_type: :bezerros,
         name: "some name",
-        status: :active
+        status: :active,
+        observation: "some observation"
       })
 
     {:ok, pack} = Oddish.Packs.create_pack(scope, attrs)
