@@ -38,12 +38,6 @@ defmodule Oddish.Cattle.Bovine do
     |> put_change(:org_id, organization_scope.organization.id)
   end
 
-  def bovine_pack_history_changeset(bovine_pack_history, attrs) do
-    bovine_pack_history
-    |> cast(attrs, [:bovine_id, :pack_id, :start_date, :end_date])
-    |> validate_required([:bovine_id, :pack_id, :start_date])
-  end
-
   def present_gender(gender) do
     case gender do
       :male -> "Macho"

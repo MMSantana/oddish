@@ -15,6 +15,8 @@ defmodule Oddish.Repo.Migrations.LinkBovinesToPacks do
       add :pack_id, references(:packs, on_delete: :nilify_all)
       add :start_date, :utc_datetime_usec
       add :end_date, :utc_datetime_usec
+
+      timestamps(type: :utc_datetime)
     end
 
     create index(:bovines, [:pack_id])
