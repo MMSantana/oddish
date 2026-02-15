@@ -14,6 +14,12 @@ defmodule OddishWeb.PackLive.Show do
             <.icon name="hero-arrow-left" />
           </.button>
           <.button
+            variant="soft-primary"
+            navigate={~p"/o/#{@current_scope.organization.slug}/grazes/history?pack=#{@pack}"}
+          >
+            <.icon name="hero-academic-cap" /> Histórico
+          </.button>
+          <.button
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/packs/#{@pack}/edit?return_to=show"}
           >

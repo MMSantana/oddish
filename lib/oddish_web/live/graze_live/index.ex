@@ -11,10 +11,10 @@ defmodule OddishWeb.GrazeLive.Index do
         Manejos
         <:actions>
           <.button
-            variant="primary"
+            variant="soft-primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/grazes/history"}
           >
-            <.icon name="hero-plus" /> Histórico
+            <.icon name="hero-academic-cap" /> Histórico
           </.button>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/grazes/new"}>
             <.icon name="hero-plus" /> Novo manejo

@@ -14,6 +14,12 @@ defmodule OddishWeb.SoltaLive.Show do
             <.icon name="hero-arrow-left" />
           </.button>
           <.button
+            variant="soft-primary"
+            navigate={~p"/o/#{@current_scope.organization.slug}/grazes/history?solta=#{@solta}"}
+          >
+            <.icon name="hero-academic-cap" /> Histórico
+          </.button>
+          <.button
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/soltas/#{@solta}/edit?return_to=show"}
           >
