@@ -54,6 +54,23 @@ defmodule Oddish.Cattle do
     Repo.all_by(Bovine, org_id: scope.organization.id, gender: :female)
   end
 
+  def name_number_search(%Scope{} = scope, query) when query == "" or is_nil(query) do
+    list_bovines(scope)
+  end
+
+  def name_number_search(%Scope{organization: %Oddish.Accounts.Organization{id: org_id}}, query) do
+    search_term = "%#{query}%"
+
+    from(b in Bovine,
+      where:
+        (b.org_id == ^org_id and
+           ilike(b.name, ^search_term)) or
+          ilike(b.registration_number, ^search_term),
+      order_by: [asc: [b.name, b.registration_number]]
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single bovine.
 

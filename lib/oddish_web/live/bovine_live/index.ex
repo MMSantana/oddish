@@ -16,6 +16,15 @@ defmodule OddishWeb.BovineLive.Index do
         </:actions>
       </.header>
 
+      <.form
+        for={@name_number_form}
+        id="search-form"
+        phx-change="search"
+        phx-submit="search"
+      >
+        <.input field={@name_number_form[:query]} type="text" label="Nome" phx-debounce="500" />
+      </.form>
+
       <.table
         id="bovines"
         rows={@streams.bovines}
@@ -56,15 +65,33 @@ defmodule OddishWeb.BovineLive.Index do
   end
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     if connected?(socket) do
       Cattle.subscribe_bovines(socket.assigns.current_scope)
     end
 
+    query = params["query"] || ""
+
     {:ok,
      socket
      |> assign(:page_title, "Animais")
+     |> assign(:name_number_form, to_form(%{"query" => query}))
      |> stream(:bovines, list_bovines(socket.assigns.current_scope))}
+  end
+
+  @impl true
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :index, params) do
+    query = get_in(params, ["query", "query"]) || params["query"] || ""
+
+    socket
+    |> assign(:name_number_form, to_form(%{"query" => query}))
+    |> stream(:bovines, Oddish.Cattle.name_number_search(socket.assigns.current_scope, query),
+      reset: true
+    )
   end
 
   @impl true
@@ -73,6 +100,14 @@ defmodule OddishWeb.BovineLive.Index do
     {:ok, _} = Cattle.delete_bovine(socket.assigns.current_scope, bovine)
 
     {:noreply, stream_delete(socket, :bovines, bovine)}
+  end
+
+  @impl true
+  def handle_event("search", query, socket) do
+    {:noreply,
+     push_patch(socket,
+       to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/bovines?#{%{query: query}}"
+     )}
   end
 
   @impl true
