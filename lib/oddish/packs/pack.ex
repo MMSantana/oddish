@@ -4,7 +4,7 @@ defmodule Oddish.Packs.Pack do
 
   schema "packs" do
     field :name, :string
-    field :flock_type, Ecto.Enum, values: [:bezerros, :bois, :novilhas, :vacas]
+    field :flock_type, Ecto.Enum, values: [:bezerros, :bois, :novilhas, :vacas, :garrotes]
     field :animal_count, :integer
     field :status, Ecto.Enum, values: [:active, :inactive]
     field :observation, :string
@@ -37,6 +37,7 @@ defmodule Oddish.Packs.Pack do
       :bois -> "Bois"
       :novilhas -> "Novilhas"
       :vacas -> "Vacas"
+      :garrotes -> "Garrotes"
     end
   end
 end
