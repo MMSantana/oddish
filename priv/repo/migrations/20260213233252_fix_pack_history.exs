@@ -21,7 +21,6 @@ defmodule Oddish.Repo.Migrations.FixPackHistory do
   end
 
   def down do
-
     create table(:bovine_pack_history) do
       add :bovine_id, references(:bovines, on_delete: :nilify_all)
       add :pack_id, references(:packs, on_delete: :nilify_all)
