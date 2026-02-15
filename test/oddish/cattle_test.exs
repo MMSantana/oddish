@@ -5,9 +5,11 @@ defmodule Oddish.CattleTest do
 
   describe "bovines" do
     alias Oddish.Cattle.Bovine
+    alias Oddish.Cattle.BovinePackHistory
 
     import Oddish.AccountsFixtures, only: [organization_scope_fixture: 0]
     import Oddish.CattleFixtures
+    import Oddish.PacksFixtures
 
     @invalid_attrs %{
       name: nil,
@@ -26,6 +28,11 @@ defmodule Oddish.CattleTest do
       other_bovine = bovine_fixture(other_scope)
       assert Cattle.list_bovines(scope) == [bovine]
       assert Cattle.list_bovines(other_scope) == [other_bovine]
+
+      bovine_pack_history = BovinePackHistory.get_active(scope, bovine)
+
+      assert bovine_pack_history.bovine_id == bovine.id
+      assert bovine_pack_history.pack_id == bovine.pack_id
     end
 
     test "get_bovine!/2 returns the bovine with given id" do
@@ -67,6 +74,8 @@ defmodule Oddish.CattleTest do
     test "update_bovine/3 with valid data updates the bovine" do
       scope = organization_scope_fixture()
       bovine = bovine_fixture(scope)
+      other_pack = pack_fixture(scope)
+      bovine_pack_history = BovinePackHistory.get_active(scope, bovine)
 
       update_attrs = %{
         name: "some updated name",
@@ -74,7 +83,8 @@ defmodule Oddish.CattleTest do
         registration_number: "some updated registration_number",
         gender: :female,
         date_of_birth: ~D[2026-02-05],
-        observation: "some updated observation"
+        observation: "some updated observation",
+        pack_id: other_pack.id
       }
 
       assert {:ok, %Bovine{} = bovine} = Cattle.update_bovine(scope, bovine, update_attrs)
@@ -85,6 +95,15 @@ defmodule Oddish.CattleTest do
       assert bovine.mother_id == nil
       assert bovine.date_of_birth == ~D[2026-02-05]
       assert bovine.observation == "some updated observation"
+      assert bovine.pack_id == other_pack.id
+
+      finished_bovine_pack_history = BovinePackHistory.get!(scope, bovine_pack_history.id)
+      new_bovine_pack_history = BovinePackHistory.get_active(scope, bovine)
+
+      assert %BovinePackHistory{} = finished_bovine_pack_history
+      assert %BovinePackHistory{} = new_bovine_pack_history
+      assert finished_bovine_pack_history.end_date != nil
+      assert new_bovine_pack_history.end_date == nil
     end
 
     test "update_bovine/3 with invalid scope raises" do

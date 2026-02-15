@@ -7,7 +7,9 @@ defmodule Oddish.Cattle do
   alias Oddish.Repo
 
   alias Oddish.Cattle.Bovine
+  alias Oddish.Cattle.BovinePackHistory
   alias Oddish.Accounts.Scope
+  alias Ecto.Multi
 
   @doc """
   Subscribes to scoped notifications about any bovine changes.
@@ -79,12 +81,33 @@ defmodule Oddish.Cattle do
 
   """
   def create_bovine(%Scope{} = scope, attrs) do
-    with {:ok, bovine = %Bovine{}} <-
-           %Bovine{}
-           |> Bovine.changeset(attrs, scope)
-           |> Repo.insert() do
-      broadcast_bovine(scope, {:created, bovine})
-      {:ok, bovine}
+    changeset = Bovine.changeset(%Bovine{}, attrs, scope)
+
+    if Ecto.Changeset.get_change(changeset, :pack_id) do
+      with {:ok, %{create_bovine: bovine}} <-
+             Multi.new()
+             |> Multi.insert(:create_bovine, changeset)
+             |> Multi.run(:create_history, fn _repo,
+                                              %{
+                                                create_bovine: %Bovine{
+                                                  id: bovine_id,
+                                                  pack_id: pack_id
+                                                }
+                                              } ->
+               BovinePackHistory.create(scope, %{
+                 pack_id: pack_id,
+                 bovine_id: bovine_id
+               })
+             end)
+             |> Repo.transact() do
+        broadcast_bovine(scope, {:created, bovine})
+        {:ok, bovine}
+      end
+    else
+      with {:ok, bovine = %Bovine{}} <- Repo.insert(changeset) do
+        broadcast_bovine(scope, {:created, bovine})
+        {:ok, bovine}
+      end
     end
   end
 
@@ -100,7 +123,7 @@ defmodule Oddish.Cattle do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_bovine(%Scope{} = scope, %Bovine{} = bovine, attrs) do
+  def do_update_bovine(%Scope{} = scope, %Bovine{} = bovine, attrs) do
     true = bovine.org_id == scope.organization.id
 
     with {:ok, bovine = %Bovine{}} <-
@@ -109,6 +132,41 @@ defmodule Oddish.Cattle do
            |> Repo.update() do
       broadcast_bovine(scope, {:updated, bovine})
       {:ok, bovine}
+    end
+  end
+
+  def update_bovine(%Scope{} = scope, %Bovine{} = bovine, attrs) do
+    true = bovine.org_id == scope.organization.id
+
+    changeset = Bovine.changeset(bovine, attrs, scope)
+
+    if Ecto.Changeset.get_change(changeset, :pack_id) do
+      with {:ok, %{update_bovine: updated_bovine}} <-
+             Multi.new()
+             |> Multi.run(:maybe_end_bovine_pack_history, fn _, _ ->
+               case BovinePackHistory.get_active(scope, bovine) do
+                 %BovinePackHistory{} = bph -> BovinePackHistory.finish(scope, bph)
+                 _ -> {:ok, nil}
+               end
+             end)
+             |> Multi.update(:update_bovine, changeset)
+             |> Multi.run(:create_bovine_pack_history, fn _,
+                                                          %{
+                                                            update_bovine: %{
+                                                              id: bovine_id,
+                                                              pack_id: pack_id
+                                                            }
+                                                          } ->
+               BovinePackHistory.create(scope, %{bovine_id: bovine_id, pack_id: pack_id})
+             end)
+             |> Repo.transact() do
+        {:ok, updated_bovine}
+      end
+    else
+      with {:ok, updated_bovine = %Bovine{}} <- Repo.update(changeset) do
+        broadcast_bovine(scope, {:updated, updated_bovine})
+        {:ok, updated_bovine}
+      end
     end
   end
 
