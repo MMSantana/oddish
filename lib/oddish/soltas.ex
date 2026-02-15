@@ -41,7 +41,11 @@ defmodule Oddish.Soltas do
 
   """
   def list_soltas(%Scope{} = scope) do
-    Repo.all_by(Solta, org_id: scope.organization.id)
+    from(s in Solta,
+      where: s.org_id == ^scope.organization.id,
+      order_by: [asc: s.name]
+    )
+    |> Repo.all()
   end
 
   @doc """

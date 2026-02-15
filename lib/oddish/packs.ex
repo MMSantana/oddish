@@ -41,7 +41,11 @@ defmodule Oddish.Packs do
 
   """
   def list_packs(%Scope{} = scope) do
-    Repo.all_by(Pack, org_id: scope.organization.id)
+    from(p in Pack,
+      where: p.org_id == ^scope.organization.id,
+      order_by: [asc: p.name]
+    )
+    |> Repo.all()
   end
 
   def list_active_packs(%Scope{} = scope) do

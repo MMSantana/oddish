@@ -43,7 +43,11 @@ defmodule Oddish.Cattle do
 
   """
   def list_bovines(%Scope{} = scope) do
-    Repo.all_by(Bovine, org_id: scope.organization.id)
+    from(b in Bovine,
+      where: b.org_id == ^scope.organization.id,
+      order_by: [asc: b.id]
+    )
+    |> Repo.all()
   end
 
   def list_cows(%Scope{} = scope) do
