@@ -92,7 +92,7 @@ defmodule OddishWeb.GrazeLive.History do
         @graze.end_date == nil ->
           "badge badge-warning"
 
-        Date.after?(Date.add(@graze.start_date, @graze.planned_period), @graze.end_date) ->
+        !Date.before?(Date.add(@graze.start_date, @graze.planned_period), @graze.end_date) ->
           "badge badge-success"
 
         true ->

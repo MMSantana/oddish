@@ -162,7 +162,7 @@ defmodule OddishWeb.GrazeLive.Index do
   defp on_time_to_start(assigns) do
     ~H"""
     <div class={
-      if Date.after?(@graze.start_date, Date.utc_today()) do
+      if !Date.before?(@graze.start_date, Date.utc_today()) do
         "badge badge-success"
       else
         "badge badge-error"
@@ -175,7 +175,7 @@ defmodule OddishWeb.GrazeLive.Index do
   defp on_time_to_end(assigns) do
     ~H"""
     <div class={
-      if Date.after?(Date.add(@graze.start_date, @graze.planned_period), Date.utc_today()) do
+      if !Date.before?(Date.add(@graze.start_date, @graze.planned_period), Date.utc_today()) do
         "badge badge-success"
       else
         "badge badge-error"
