@@ -63,8 +63,21 @@ defmodule OddishWeb.GrazeLive.History do
 
     {:ok,
      socket
-     |> assign(:page_title, "Histórico de manejos")
-     |> stream(:grazes, list_grazes(socket.assigns.current_scope))}
+     |> assign(:page_title, "Histórico de manejos")}
+  end
+
+  @impl true
+  def handle_params(params, _uri, socket) do
+    filters = [
+      pack_id: parse_id(params["pack"]),
+      solta_id: parse_id(params["solta"])
+    ]
+
+    grazes =
+      Oddish.Grazes.list_grazes(socket.assigns.current_scope, filters)
+      |> Oddish.Repo.preload([:solta, :pack])
+
+    {:noreply, stream(socket, :grazes, grazes)}
   end
 
   @impl true
@@ -82,8 +95,12 @@ defmodule OddishWeb.GrazeLive.History do
   end
 
   defp list_grazes(current_scope) do
-    Grazes.list_grazes(current_scope) |> Oddish.Repo.preload([:pack])
+    Grazes.list_grazes(current_scope) |> Oddish.Repo.preload([:solta, :pack])
   end
+
+  defp parse_id(nil), do: nil
+  defp parse_id(""), do: nil
+  defp parse_id(id), do: id
 
   defp on_time?(assigns) do
     ~H"""

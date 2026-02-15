@@ -23,8 +23,8 @@ defmodule Oddish.GrazesTest do
       other_scope = organization_scope_fixture()
       graze = graze_fixture(scope)
       other_graze = graze_fixture(other_scope)
-      assert Grazes.list_grazes(scope) == [Repo.preload(graze, :solta)]
-      assert Grazes.list_grazes(other_scope) == [Repo.preload(other_graze, :solta)]
+      assert Grazes.list_grazes(scope) == [graze]
+      assert Grazes.list_grazes(other_scope) == [other_graze]
     end
 
     test "get_graze!/2 returns the graze with given id" do

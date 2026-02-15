@@ -152,11 +152,11 @@ defmodule OddishWeb.GrazeLive.Index do
   end
 
   defp list_planned_grazes(current_scope) do
-    Grazes.list_grazes_by_status(current_scope, :planned) |> Oddish.Repo.preload([:pack])
+    Grazes.list_grazes(current_scope, %{status: :planned}) |> Oddish.Repo.preload([:pack, :solta])
   end
 
   defp list_ongoing_grazes(current_scope) do
-    Grazes.list_grazes_by_status(current_scope, :ongoing) |> Oddish.Repo.preload([:pack])
+    Grazes.list_grazes(current_scope, %{status: :ongoing}) |> Oddish.Repo.preload([:pack, :solta])
   end
 
   defp on_time_to_start(assigns) do

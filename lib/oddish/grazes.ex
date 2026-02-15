@@ -42,8 +42,25 @@ defmodule Oddish.Grazes do
   """
   def list_grazes(%Scope{} = scope) do
     Repo.all_by(Graze, org_id: scope.organization.id)
-    |> Repo.preload(:solta)
   end
+
+  def list_grazes(%Scope{} = scope, filters \\ []) do
+    Graze
+    |> where(org_id: ^scope.organization.id)
+    |> maybe_filter_by_pack(filters[:pack_id])
+    |> maybe_filter_by_solta(filters[:solta_id])
+    |> maybe_filter_by_status(filters[:status])
+    |> Repo.all()
+  end
+
+  defp maybe_filter_by_pack(query, nil), do: query
+  defp maybe_filter_by_pack(query, id), do: where(query, pack_id: ^id)
+
+  defp maybe_filter_by_solta(query, nil), do: query
+  defp maybe_filter_by_solta(query, id), do: where(query, solta_id: ^id)
+
+  defp maybe_filter_by_status(query, nil), do: query
+  defp maybe_filter_by_status(query, status), do: where(query, status: ^status)
 
   def list_grazes_by_status(%Scope{} = scope, status) do
     Repo.all_by(Graze, org_id: scope.organization.id, status: status)
