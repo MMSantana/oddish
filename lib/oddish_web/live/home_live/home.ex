@@ -56,33 +56,39 @@ defmodule OddishWeb.HomeLive.Home do
   attr :description, :string, required: true
   attr :icon, :string, required: true
   attr :path, :string, required: true
-  attr :color, :string, default: "blue"
+  attr :color, :string, default: "bg-primary"
 
   defp navigation_card(assigns) do
-    ~H"""
-    <.link
-      navigate={@path}
-      class="block card bg-base-100 shadow-xl hover:shadow-2xl hover:bg-gray-50 transition-all duration-200 rounded-lg h-full"
-    >
-      <div class="card-body grow flex flex-col">
-        <div class="flex items-center gap-3 mb-4">
-          <div class={[
-            "p-3 rounded-lg transition-colors duration-200",
-            @color
-          ]}>
-            <.icon name={@icon} class="w-8 h-8 text-white" />
-          </div>
+  ~H"""
+  <.link
+    navigate={@path}
+    class="card bg-base-100 shadow-xs hover:shadow-2xl hover:bg-base-300 transition-all duration-300 h-full group border border-base-200"
+  >
+    <div class="card-body p-6">
+      <div class="flex items-center gap-4 mb-2">
+        <div class={[
+          "p-3 rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-110",
+          @color # Assuming @color passes something like 'bg-primary' or 'bg-secondary'
+        ]}>
+          <.icon name={@icon} class="w-8 h-8 text-primary-content" />
         </div>
-
-        <h2 class="card-title text-xl group-hover:text-blue-600 transition-colors duration-200 wrap-break-words">
-          {@title}
-        </h2>
-
-        <p class="text-sm text-gray-500 grow mt-2 wrap-break-words">
-          {@description}
-        </p>
       </div>
-    </.link>
-    """
-  end
+
+      <h2 class="card-title text-xl text-base-content group-hover:text-primary transition-colors duration-200">
+        {@title}
+      </h2>
+
+      <p class="text-sm text-base-content/70 mt-2 line-clamp-3">
+        {@description}
+      </p>
+
+      <div class="card-actions justify-end mt-4">
+        <span class="btn btn-ghost btn-sm btn-circle text-primary group-hover:bg-primary group-hover:text-primary-content">
+          <.icon name="hero-arrow-right" class="w-4 h-4" />
+        </span>
+      </div>
+    </div>
+  </.link>
+  """
+end
 end
