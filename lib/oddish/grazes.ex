@@ -163,7 +163,7 @@ defmodule Oddish.Grazes do
   def end_ongoing_graze(%Scope{} = scope, %Graze{} = graze) do
     true = graze.status == :ongoing
 
-    update_graze(scope, graze, %{status: :finished})
+    update_graze(scope, graze, %{status: :finished, end_date: Date.utc_today()})
   end
 
   @doc """
