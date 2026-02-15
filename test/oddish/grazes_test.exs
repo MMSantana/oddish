@@ -43,7 +43,7 @@ defmodule Oddish.GrazesTest do
       valid_attrs = %{
         status: "planned",
         start_date: ~D[2026-01-31],
-        end_date: ~D[2026-01-31],
+        end_date: nil,
         planned_period: 42,
         solta_id: solta.id,
         pack_id: pack.id
@@ -52,7 +52,7 @@ defmodule Oddish.GrazesTest do
       assert {:ok, %Graze{} = graze} = Grazes.create_graze(scope, valid_attrs)
       assert graze.status == :planned
       assert graze.start_date == ~D[2026-01-31]
-      assert graze.end_date == ~D[2026-01-31]
+      assert graze.end_date == nil
       assert graze.planned_period == 42
       assert graze.solta_id == solta.id
       assert graze.org_id == scope.organization.id
@@ -70,7 +70,7 @@ defmodule Oddish.GrazesTest do
       other_pack = Oddish.PacksFixtures.pack_fixture(scope)
 
       update_attrs = %{
-        status: "ongoing",
+        status: "finished",
         start_date: ~D[2026-02-01],
         end_date: ~D[2026-02-01],
         planned_period: 43,
@@ -79,7 +79,7 @@ defmodule Oddish.GrazesTest do
       }
 
       assert {:ok, %Graze{} = graze} = Grazes.update_graze(scope, graze, update_attrs)
-      assert graze.status == :ongoing
+      assert graze.status == :finished
       assert graze.start_date == ~D[2026-02-01]
       assert graze.end_date == ~D[2026-02-01]
       assert graze.planned_period == 43

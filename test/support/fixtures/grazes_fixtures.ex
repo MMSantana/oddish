@@ -13,7 +13,7 @@ defmodule Oddish.GrazesFixtures do
 
     attrs =
       Enum.into(attrs, %{
-        end_date: ~D[2026-01-31],
+        end_date: nil,
         planned_period: 42,
         solta_id: solta.id,
         pack_id: pack.id,

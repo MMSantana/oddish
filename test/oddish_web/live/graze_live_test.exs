@@ -5,7 +5,7 @@ defmodule OddishWeb.GrazeLiveTest do
   import Oddish.GrazesFixtures
 
   @update_attrs %{
-    status: :ongoing,
+    status: :finished,
     start_date: "2026-02-01",
     end_date: "2026-02-01",
     planned_period: 43
@@ -43,7 +43,7 @@ defmodule OddishWeb.GrazeLiveTest do
       create_attrs = %{
         status: "planned",
         start_date: "2026-01-31",
-        end_date: "2026-01-31",
+        end_date: nil,
         planned_period: 42,
         pack_id: pack.id,
         solta_id: solta.id

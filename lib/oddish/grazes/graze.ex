@@ -33,7 +33,32 @@ defmodule Oddish.Grazes.Graze do
       :pack_id,
       :solta_id
     ])
+    |> validate_end_date_by_status()
     |> put_change(:org_id, organization_scope.organization.id)
+  end
+
+  defp validate_end_date_by_status(changeset) do
+    status = get_field(changeset, :status)
+    end_date = get_field(changeset, :end_date)
+
+    cond do
+      status != :finished and not is_nil(end_date) ->
+        add_error(
+          changeset,
+          :end_date,
+          "Data final deve estar vazia a menos que status seja finalizado"
+        )
+
+      status == :finished and is_nil(end_date) ->
+        add_error(
+          changeset,
+          :status,
+          "Status não pode ser finalizado sem uma data de encerramento"
+        )
+
+      true ->
+        changeset
+    end
   end
 
   def present_status(status) do
