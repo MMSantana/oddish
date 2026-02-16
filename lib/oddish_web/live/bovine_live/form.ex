@@ -50,6 +50,7 @@ defmodule OddishWeb.BovineLive.Form do
           label="Lote"
         />
         <.input field={@form[:date_of_birth]} type="date" label="Data de nascimento" />
+        <.input field={@form[:departed_date]} type="date" label="Data de partida" />
         <.input field={@form[:description]} type="text" label="Descrição" />
         <.input field={@form[:observation]} type="textarea" label="Observação" />
         <footer>

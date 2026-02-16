@@ -8,6 +8,7 @@ defmodule Oddish.Cattle.Bovine do
     field :gender, Ecto.Enum, values: [:male, :female]
     field :status, Ecto.Enum, values: [:active, :sold, :deceased, :lost]
     field :date_of_birth, :date
+    field :departed_date, :date
     field :description, :string
     field :observation, :string
     field :org_id, :id
@@ -28,13 +29,15 @@ defmodule Oddish.Cattle.Bovine do
       :gender,
       :mother_id,
       :date_of_birth,
+      :departed_date,
       :description,
       :observation,
       :status,
       :pack_id
     ])
     |> validate_required([:status, :gender])
-    |> validate_required_one_of([:name, :registration_number])
+    |> validate_required_one_of([:name, :registration_number], ["Nome", "Número"])
+    |> validate_status_departed_date_coupling()
     |> put_change(:org_id, organization_scope.organization.id)
   end
 
@@ -54,8 +57,11 @@ defmodule Oddish.Cattle.Bovine do
     end
   end
 
-  defp validate_required_one_of(changeset, fields) when is_list(fields) do
-    # Check if any of the fields have a value (either in changes or already in the data)
+  defp field_present?(nil), do: false
+  defp field_present?(str) when is_binary(str), do: String.trim(str) != ""
+  defp field_present?(_), do: true
+
+  defp validate_required_one_of(changeset, fields, presentable_fields) when is_list(fields) do
     present? =
       Enum.any?(fields, fn field ->
         get_field(changeset, field) |> field_present?()
@@ -64,16 +70,27 @@ defmodule Oddish.Cattle.Bovine do
     if present? do
       changeset
     else
-      # If none are present, add an error to the first field (or both)
       add_error(
         changeset,
         hd(fields),
-        "one of these fields must be present: #{Enum.join(fields, ", ")}"
+        "Um desses campos precisa estar presente: #{Enum.join(presentable_fields, ", ")}"
       )
     end
   end
 
-  defp field_present?(nil), do: false
-  defp field_present?(str) when is_binary(str), do: String.trim(str) != ""
-  defp field_present?(_), do: true
+  defp validate_status_departed_date_coupling(changeset) do
+    status = get_field(changeset, :status)
+    departed_date = get_field(changeset, :departed_date)
+
+    cond do
+      Enum.member?([:sold, :deceased, :lost], status) and is_nil(departed_date) ->
+        add_error(changeset, :status, "Status final precisa de uma data de encerramento")
+
+      status == :active and not is_nil(departed_date) ->
+        add_error(changeset, :departed_date, "Data de encerramento precisa de um status final")
+
+      true ->
+        changeset
+    end
+  end
 end

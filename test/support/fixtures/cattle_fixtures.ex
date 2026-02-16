@@ -13,6 +13,7 @@ defmodule Oddish.CattleFixtures do
     attrs =
       Enum.into(attrs, %{
         date_of_birth: ~D[2026-02-04],
+        departed_date: nil,
         description: "some description",
         gender: :male,
         mother_id: nil,

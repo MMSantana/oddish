@@ -19,7 +19,9 @@ defmodule OddishWeb.BovineLiveTest do
     registration_number: "some updated registration_number",
     gender: :female,
     date_of_birth: ~D[2026-02-05],
-    observation: "some updated observation"
+    departed_date: ~D[2027-04-05],
+    observation: "some updated observation",
+    status: :sold
   }
   @invalid_attrs %{
     name: nil,
@@ -88,6 +90,16 @@ defmodule OddishWeb.BovineLiveTest do
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
+
+      assert form_live
+             |> form("#bovine-form", bovine: %{@create_attrs | status: :sold})
+             |> render_change() =~ "Status final precisa de uma data de encerramento"
+
+      assert form_live
+             |> form("#bovine-form",
+               bovine: Map.put(@create_attrs, :departed_date, ~D[2027-04-05])
+             )
+             |> render_change() =~ "Data de encerramento precisa de um status final"
 
       assert {:ok, index_live, _html} =
                form_live

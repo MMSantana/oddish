@@ -22,7 +22,12 @@ defmodule OddishWeb.BovineLive.Index do
         phx-change="search"
         phx-submit="search"
       >
-        <.input field={@name_number_form[:query]} type="text" label="Nome" phx-debounce="500" />
+        <.input
+          field={@name_number_form[:query]}
+          type="text"
+          label="Nome ou número"
+          phx-debounce="500"
+        />
       </.form>
 
       <.table

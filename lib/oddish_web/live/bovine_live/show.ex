@@ -31,6 +31,7 @@ defmodule OddishWeb.BovineLive.Show do
         <:item title="Mãe">{display_mother(@bovine)}</:item>
         <:item title="Lote">{display_pack(@bovine)}</:item>
         <:item title="Data de nascimento">{@bovine.date_of_birth}</:item>
+        <:item title="Data de partida">{@bovine.departed_date}</:item>
         <:item title="Descrição">{@bovine.description}</:item>
         <:item title="Observação">{@bovine.observation}</:item>
       </.list>

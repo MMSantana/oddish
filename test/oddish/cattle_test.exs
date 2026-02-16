@@ -11,6 +11,17 @@ defmodule Oddish.CattleTest do
     import Oddish.CattleFixtures
     import Oddish.PacksFixtures
 
+    @update_attrs %{
+      name: "some updated name",
+      description: "some updated description",
+      registration_number: "some updated registration_number",
+      status: :sold,
+      gender: :female,
+      date_of_birth: ~D[2026-02-05],
+      departed_date: ~D[2027-02-05],
+      observation: "some updated observation"
+    }
+
     @invalid_attrs %{
       name: nil,
       description: nil,
@@ -77,17 +88,13 @@ defmodule Oddish.CattleTest do
       other_pack = pack_fixture(scope)
       bovine_pack_history = BovinePackHistory.get_active(scope, bovine)
 
-      update_attrs = %{
-        name: "some updated name",
-        description: "some updated description",
-        registration_number: "some updated registration_number",
-        gender: :female,
-        date_of_birth: ~D[2026-02-05],
-        observation: "some updated observation",
-        pack_id: other_pack.id
-      }
+      assert {:ok, %Bovine{} = bovine} =
+               Cattle.update_bovine(
+                 scope,
+                 bovine,
+                 Map.put(@update_attrs, :pack_id, other_pack.id)
+               )
 
-      assert {:ok, %Bovine{} = bovine} = Cattle.update_bovine(scope, bovine, update_attrs)
       assert bovine.name == "some updated name"
       assert bovine.description == "some updated description"
       assert bovine.registration_number == "some updated registration_number"
@@ -120,6 +127,13 @@ defmodule Oddish.CattleTest do
       scope = organization_scope_fixture()
       bovine = bovine_fixture(scope)
       assert {:error, %Ecto.Changeset{}} = Cattle.update_bovine(scope, bovine, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Cattle.update_bovine(scope, bovine, Map.put(@update_attrs, :status, :active))
+
+      assert {:error, %Ecto.Changeset{}} =
+               Cattle.update_bovine(scope, bovine, Map.put(@update_attrs, :departed_date, nil))
+
       assert bovine == Cattle.get_bovine!(scope, bovine.id)
     end
 
