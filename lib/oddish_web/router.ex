@@ -55,6 +55,21 @@ defmodule OddishWeb.Router do
       live "/packs/new", PackLive.Form, :new
       live "/packs/:id", PackLive.Show, :show
       live "/packs/:id/edit", PackLive.Form, :edit
+
+      live "/vets", VetLive.Index, :index
+      live "/vets/new", VetLive.Form, :new
+      live "/vets/:id", VetLive.Show, :show
+      live "/vets/:id/edit", VetLive.Form, :edit
+
+      live "/procedures", ProcedureLive.Index, :index
+      live "/procedures/new", ProcedureLive.Form, :new
+      live "/procedures/:id", ProcedureLive.Show, :show
+      live "/procedures/:id/edit", ProcedureLive.Form, :edit
+
+      live "/visits", VisitLive.Index, :index
+      live "/visits/new", VisitLive.Form, :new
+      live "/visits/:id", VisitLive.Show, :show
+      live "/visits/:id/edit", VisitLive.Form, :edit
     end
   end
 
