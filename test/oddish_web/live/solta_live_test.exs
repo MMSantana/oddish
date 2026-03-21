@@ -39,7 +39,7 @@ defmodule OddishWeb.SoltaLiveTest do
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert {:ok, index_live, _html} =
                form_live
@@ -65,7 +65,7 @@ defmodule OddishWeb.SoltaLiveTest do
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert {:ok, index_live, _html} =
                form_live
@@ -112,7 +112,7 @@ defmodule OddishWeb.SoltaLiveTest do
 
       assert form_live
              |> form("#solta-form", solta: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert {:ok, show_live, _html} =
                form_live

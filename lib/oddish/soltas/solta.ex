@@ -15,7 +15,7 @@ defmodule Oddish.Soltas.Solta do
   def changeset(solta, attrs, organization_scope) do
     solta
     |> cast(attrs, [:name, :area, :grass_type])
-    |> validate_required([:name])
+    |> validate_required([:name], message: "Não pode estar em branco")
     |> unique_constraint([:org_id, :name], message: "Esse nome já está em uso")
     |> put_change(:org_id, organization_scope.organization.id)
   end

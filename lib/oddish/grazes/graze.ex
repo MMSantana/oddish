@@ -26,13 +26,16 @@ defmodule Oddish.Grazes.Graze do
       :pack_id,
       :solta_id
     ])
-    |> validate_required([
-      :start_date,
-      :planned_period,
-      :status,
-      :pack_id,
-      :solta_id
-    ])
+    |> validate_required(
+      [
+        :start_date,
+        :planned_period,
+        :status,
+        :pack_id,
+        :solta_id
+      ],
+      message: "Não pode estar em branco"
+    )
     |> validate_end_date_by_status()
     |> put_change(:org_id, organization_scope.organization.id)
   end

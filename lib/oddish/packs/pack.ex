@@ -20,7 +20,9 @@ defmodule Oddish.Packs.Pack do
   def changeset(pack, attrs, organization_scope) do
     pack
     |> cast(attrs, [:name, :flock_type, :animal_count, :status, :observation])
-    |> validate_required([:name, :flock_type, :animal_count, :status])
+    |> validate_required([:name, :flock_type, :animal_count, :status],
+      message: "Não pode estar em branco"
+    )
     |> put_change(:org_id, organization_scope.organization.id)
   end
 
