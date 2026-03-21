@@ -7,6 +7,7 @@ defmodule Oddish.Cattle.Bovine do
     field :registration_number, :string
     field :gender, Ecto.Enum, values: [:male, :female]
     field :status, Ecto.Enum, values: [:active, :sold, :deceased, :lost]
+    field :newborn?, :boolean
     field :date_of_birth, :date
     field :departed_date, :date
     field :description, :string
@@ -22,23 +23,41 @@ defmodule Oddish.Cattle.Bovine do
 
   @doc false
   def changeset(bovine, attrs, organization_scope) do
-    bovine
-    |> cast(attrs, [
-      :name,
-      :registration_number,
-      :gender,
-      :mother_id,
-      :date_of_birth,
-      :departed_date,
-      :description,
-      :observation,
-      :status,
-      :pack_id
-    ])
-    |> validate_required([:status, :gender])
-    |> validate_required_one_of([:name, :registration_number], ["Nome", "Número"])
+    changeset =
+      bovine
+      |> cast(attrs, [
+        :name,
+        :registration_number,
+        :gender,
+        :mother_id,
+        :date_of_birth,
+        :departed_date,
+        :description,
+        :observation,
+        :status,
+        :newborn?,
+        :pack_id
+      ])
+
+    newborn? = get_field(changeset, :newborn?)
+
+    changeset
+    |> validate_required([:status, :gender], message: "Não pode estar em branco")
+    |> maybe_apply_newborn_rules(newborn?)
     |> validate_status_departed_date_coupling()
     |> put_change(:org_id, organization_scope.organization.id)
+  end
+
+  defp maybe_apply_newborn_rules(changeset, true) do
+    changeset
+    |> validate_required([:mother_id, :date_of_birth],
+      message: "Não pode estar em branco quando o animal é recém nascido"
+    )
+  end
+
+  defp maybe_apply_newborn_rules(changeset, _) do
+    changeset
+    |> validate_required_one_of([:name, :registration_number], ["Nome", "Número"])
   end
 
   def present_gender(gender) do

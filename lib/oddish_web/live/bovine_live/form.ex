@@ -15,6 +15,7 @@ defmodule OddishWeb.BovineLive.Form do
       <.form for={@form} id="bovine-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:name]} type="text" label="Nome" />
         <.input field={@form[:registration_number]} type="text" label="Número de registro" />
+        <.input field={@form[:newborn?]} type="checkbox" label="Recém Nascido?" />
         <.input
           field={@form[:gender]}
           type="select"

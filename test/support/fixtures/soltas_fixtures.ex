@@ -9,6 +9,7 @@ defmodule Oddish.SoltasFixtures do
   """
   def solta_fixture(scope, attrs \\ %{}) do
     unique_name = "solta#{System.unique_integer()}"
+
     attrs =
       Enum.into(attrs, %{
         area: "120.5",

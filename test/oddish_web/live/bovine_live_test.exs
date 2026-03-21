@@ -63,7 +63,7 @@ defmodule OddishWeb.BovineLiveTest do
 
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert {:ok, index_live, _html} =
                form_live
@@ -89,7 +89,7 @@ defmodule OddishWeb.BovineLiveTest do
 
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert form_live
              |> form("#bovine-form", bovine: %{@create_attrs | status: :sold})
@@ -146,7 +146,7 @@ defmodule OddishWeb.BovineLiveTest do
 
       assert form_live
              |> form("#bovine-form", bovine: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
+             |> render_change() =~ "Não pode estar em branco"
 
       assert {:ok, show_live, _html} =
                form_live
