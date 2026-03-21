@@ -8,11 +8,12 @@ defmodule Oddish.SoltasFixtures do
   Generate a solta.
   """
   def solta_fixture(scope, attrs \\ %{}) do
+    unique_name = "solta#{System.unique_integer()}"
     attrs =
       Enum.into(attrs, %{
         area: "120.5",
         grass_type: "some grass_type",
-        name: "some name"
+        name: unique_name
       })
 
     {:ok, solta} = Oddish.Soltas.create_solta(scope, attrs)
