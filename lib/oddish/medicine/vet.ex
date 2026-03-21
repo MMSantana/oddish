@@ -15,7 +15,7 @@ defmodule Oddish.Medicine.Vet do
   def changeset(vet, attrs, organization_scope) do
     vet
     |> cast(attrs, [:name, :telephone, :email])
-    |> validate_required([:name, :telephone, :email])
+    |> validate_required([:name, :telephone, :email], message: "Não pode estar em branco")
     |> put_change(:org_id, organization_scope.organization.id)
   end
 end

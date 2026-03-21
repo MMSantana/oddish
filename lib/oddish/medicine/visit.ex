@@ -18,7 +18,9 @@ defmodule Oddish.Medicine.Visit do
   def changeset(visit, attrs, organization_scope) do
     visit
     |> cast(attrs, [:vet_id, :procedure_id, :bovine_id, :date, :notes])
-    |> validate_required([:vet_id, :procedure_id, :bovine_id, :date])
+    |> validate_required([:vet_id, :procedure_id, :bovine_id, :date],
+      message: "Não pode estar em branco"
+    )
     |> put_change(:org_id, organization_scope.organization.id)
   end
 end
