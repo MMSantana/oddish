@@ -108,11 +108,18 @@ defmodule Oddish.MedicineTest do
 
     test "list_procedures/1 returns all scoped procedures" do
       scope = organization_scope_fixture()
+      default_procedures = Medicine.list_procedures(scope)
+
       other_scope = organization_scope_fixture()
+      other_default_procedures = Medicine.list_procedures(other_scope)
+
       procedure = procedure_fixture(scope)
       other_procedure = procedure_fixture(other_scope)
-      assert Medicine.list_procedures(scope) == [procedure]
-      assert Medicine.list_procedures(other_scope) == [other_procedure]
+
+      assert Medicine.list_procedures(scope) == default_procedures ++ [procedure]
+
+      assert Medicine.list_procedures(other_scope) ==
+               other_default_procedures ++ [other_procedure]
     end
 
     test "get_procedure!/2 returns the procedure with given id" do

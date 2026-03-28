@@ -148,6 +148,22 @@ defmodule Oddish.Medicine do
   alias Oddish.Medicine.Procedure
   alias Oddish.Accounts.Scope
 
+  @default_procedures [
+    %{name: "Inseminação", kind: :iatf},
+    %{name: "Exame de gestação", kind: :iatf}
+  ]
+
+  @doc """
+  Sets up default records (like common procedures) for a newly created organization.
+  """
+  def setup_organization_defaults(%Scope{} = scope) do
+    for attrs <- @default_procedures do
+      create_procedure(scope, attrs)
+    end
+
+    :ok
+  end
+
   @doc """
   Subscribes to scoped notifications about any procedure changes.
 

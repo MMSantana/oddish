@@ -73,7 +73,7 @@ defmodule Oddish.Accounts.Organization do
     |> Repo.insert()
   end
 
-  def create_organization(attrs, %Oddish.Accounts.Scope{user: %{id: user_id}}) do
+  def create_organization(attrs, %Oddish.Accounts.Scope{user: %{id: user_id}} = current_scope) do
     Multi.new()
     |> Multi.run(:organization, fn repo, _ ->
       insert_organization_with_unique_slug(attrs, repo)
@@ -88,9 +88,16 @@ defmodule Oddish.Accounts.Organization do
     end)
     |> Repo.transaction()
     |> case do
-      {:ok, %{organization: organization}} -> {:ok, organization}
-      {:error, :organization, changeset, _} -> {:error, changeset}
-      {:error, :user_organization, changeset, _} -> {:error, changeset}
+      {:ok, %{organization: organization}} ->
+        new_scope = Oddish.Accounts.Scope.put_organization(current_scope, organization)
+        Oddish.Medicine.setup_organization_defaults(new_scope)
+        {:ok, organization}
+
+      {:error, :organization, changeset, _} ->
+        {:error, changeset}
+
+      {:error, :user_organization, changeset, _} ->
+        {:error, changeset}
     end
   end
 
