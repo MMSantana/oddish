@@ -8,10 +8,10 @@ defmodule OddishWeb.VetLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Vets
+        Listando Veterinários
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/vets/new"}>
-            <.icon name="hero-plus" /> New Vet
+            <.icon name="hero-plus" /> Novo Veterinário
           </.button>
         </:actions>
       </.header>
@@ -23,21 +23,21 @@ defmodule OddishWeb.VetLive.Index do
           fn {_id, vet} -> JS.navigate(~p"/o/#{@current_scope.organization.slug}/vets/#{vet}") end
         }
       >
-        <:col :let={{_id, vet}} label="Name">{vet.name}</:col>
-        <:col :let={{_id, vet}} label="Telephone">{vet.telephone}</:col>
+        <:col :let={{_id, vet}} label="Nome">{vet.name}</:col>
+        <:col :let={{_id, vet}} label="Telefone">{vet.telephone}</:col>
         <:col :let={{_id, vet}} label="Email">{vet.email}</:col>
         <:action :let={{_id, vet}}>
           <div class="sr-only">
-            <.link navigate={~p"/o/#{@current_scope.organization.slug}/vets/#{vet}"}>Show</.link>
+            <.link navigate={~p"/o/#{@current_scope.organization.slug}/vets/#{vet}"}>Ver</.link>
           </div>
-          <.link navigate={~p"/o/#{@current_scope.organization.slug}/vets/#{vet}/edit"}>Edit</.link>
+          <.link navigate={~p"/o/#{@current_scope.organization.slug}/vets/#{vet}/edit"}>Editar</.link>
         </:action>
         <:action :let={{id, vet}}>
           <.link
             phx-click={JS.push("delete", value: %{id: vet.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza?"
           >
-            Delete
+            Excluir
           </.link>
         </:action>
       </.table>
@@ -53,7 +53,7 @@ defmodule OddishWeb.VetLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Vets")
+     |> assign(:page_title, "Listando Veterinários")
      |> stream(:vets, list_vets(socket.assigns.current_scope))}
   end
 

@@ -8,8 +8,8 @@ defmodule OddishWeb.VisitLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Visit {@visit.id}
-        <:subtitle>This is a visit record from your database.</:subtitle>
+        Visita {@visit.id}
+        <:subtitle>Este é um registro de visita do seu banco de dados.</:subtitle>
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/visits"}>
             <.icon name="hero-arrow-left" />
@@ -18,17 +18,24 @@ defmodule OddishWeb.VisitLive.Show do
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/visits/#{@visit}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Edit visit
+            <.icon name="hero-pencil-square" /> Editar visita
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Vet">{@visit.vet_id}</:item>
-        <:item title="Procedure">{@visit.procedure_id}</:item>
-        <:item title="Bovine">{@visit.bovine_id}</:item>
-        <:item title="Date">{@visit.date}</:item>
-        <:item title="Notes">{@visit.notes}</:item>
+        <:item title="Veterinário">{@visit.vet.name}</:item>
+        <:item title="Procedimento">{@visit.procedure.name}</:item>
+        <:item title="Pago?">{if @visit.paid?, do: "Sim", else: "Não"}</:item>
+        <:item title="Animais">
+          <ul class="list-disc pl-4">
+            <%= for bovine <- @visit.bovines do %>
+              <li>{bovine.registration_number} - {bovine.name}</li>
+            <% end %>
+          </ul>
+        </:item>
+        <:item title="Data">{@visit.date}</:item>
+        <:item title="Observações">{@visit.notes}</:item>
       </.list>
     </Layouts.app>
     """
@@ -42,7 +49,7 @@ defmodule OddishWeb.VisitLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Visit")
+     |> assign(:page_title, "Ver Visita")
      |> assign(:visit, Medicine.get_visit!(socket.assigns.current_scope, id))}
   end
 
@@ -60,7 +67,7 @@ defmodule OddishWeb.VisitLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current visit was deleted.")
+     |> put_flash(:error, "A visita atual foi excluída.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/visits")}
   end
 

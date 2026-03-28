@@ -8,8 +8,8 @@ defmodule OddishWeb.ProcedureLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Procedure {@procedure.id}
-        <:subtitle>This is a procedure record from your database.</:subtitle>
+        Procedimento {@procedure.id}
+        <:subtitle>Este é um registro de procedimento do seu banco de dados.</:subtitle>
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/procedures"}>
             <.icon name="hero-arrow-left" />
@@ -20,14 +20,14 @@ defmodule OddishWeb.ProcedureLive.Show do
               ~p"/o/#{@current_scope.organization.slug}/procedures/#{@procedure}/edit?return_to=show"
             }
           >
-            <.icon name="hero-pencil-square" /> Edit procedure
+            <.icon name="hero-pencil-square" /> Editar procedimento
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@procedure.name}</:item>
-        <:item title="Type">{@procedure.type}</:item>
+        <:item title="Nome">{@procedure.name}</:item>
+        <:item title="Tipo">{@procedure.kind}</:item>
       </.list>
     </Layouts.app>
     """
@@ -41,7 +41,7 @@ defmodule OddishWeb.ProcedureLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Procedure")
+     |> assign(:page_title, "Ver Procedimento")
      |> assign(:procedure, Medicine.get_procedure!(socket.assigns.current_scope, id))}
   end
 
@@ -59,7 +59,7 @@ defmodule OddishWeb.ProcedureLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current procedure was deleted.")
+     |> put_flash(:error, "O procedimento atual foi excluído.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/procedures")}
   end
 

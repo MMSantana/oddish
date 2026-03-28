@@ -104,7 +104,7 @@ defmodule Oddish.MedicineTest do
     import Oddish.AccountsFixtures, only: [organization_scope_fixture: 0]
     import Oddish.MedicineFixtures
 
-    @invalid_attrs %{name: nil, type: nil}
+    @invalid_attrs %{name: nil, kind: nil}
 
     test "list_procedures/1 returns all scoped procedures" do
       scope = organization_scope_fixture()
@@ -127,12 +127,12 @@ defmodule Oddish.MedicineTest do
     end
 
     test "create_procedure/2 with valid data creates a procedure" do
-      valid_attrs = %{name: "some name", type: :insemination}
+      valid_attrs = %{name: "some name", kind: :iatf}
       scope = organization_scope_fixture()
 
       assert {:ok, %Procedure{} = procedure} = Medicine.create_procedure(scope, valid_attrs)
       assert procedure.name == "some name"
-      assert procedure.type == :insemination
+      assert procedure.kind == :iatf
       assert procedure.org_id == scope.organization.id
     end
 
@@ -144,13 +144,13 @@ defmodule Oddish.MedicineTest do
     test "update_procedure/3 with valid data updates the procedure" do
       scope = organization_scope_fixture()
       procedure = procedure_fixture(scope)
-      update_attrs = %{name: "some updated name", type: :vaccine}
+      update_attrs = %{name: "some updated name", kind: :vaccine}
 
       assert {:ok, %Procedure{} = procedure} =
                Medicine.update_procedure(scope, procedure, update_attrs)
 
       assert procedure.name == "some updated name"
-      assert procedure.type == :vaccine
+      assert procedure.kind == :vaccine
     end
 
     test "update_procedure/3 with invalid scope raises" do
@@ -229,7 +229,7 @@ defmodule Oddish.MedicineTest do
         date: ~D[2026-03-20],
         vet_id: vet.id,
         procedure_id: procedure.id,
-        bovine_id: bovine.id,
+        bovine_ids: [bovine.id],
         notes: "some notes"
       }
 
@@ -237,7 +237,7 @@ defmodule Oddish.MedicineTest do
       assert visit.date == ~D[2026-03-20]
       assert visit.vet_id == vet.id
       assert visit.procedure_id == procedure.id
-      assert visit.bovine_id == bovine.id
+      assert Enum.map(visit.bovines, & &1.id) == [bovine.id]
       assert visit.notes == "some notes"
       assert visit.org_id == scope.organization.id
     end
@@ -258,7 +258,7 @@ defmodule Oddish.MedicineTest do
         date: ~D[2026-03-21],
         vet_id: vet.id,
         procedure_id: procedure.id,
-        bovine_id: bovine.id,
+        bovine_ids: [bovine.id],
         notes: "some updated notes"
       }
 
@@ -266,7 +266,7 @@ defmodule Oddish.MedicineTest do
       assert visit.date == ~D[2026-03-21]
       assert visit.vet_id == vet.id
       assert visit.procedure_id == procedure.id
-      assert visit.bovine_id == bovine.id
+      assert Enum.map(visit.bovines, & &1.id) == [bovine.id]
       assert visit.notes == "some updated notes"
     end
 

@@ -4,9 +4,9 @@ defmodule OddishWeb.ProcedureLiveTest do
   import Phoenix.LiveViewTest
   import Oddish.MedicineFixtures
 
-  @create_attrs %{name: "some name", type: :insemination}
-  @update_attrs %{name: "some updated name", type: :touch}
-  @invalid_attrs %{name: nil, type: nil}
+  @create_attrs %{name: "some name", kind: :consultation}
+  @update_attrs %{name: "some updated name", kind: :vaccine}
+  @invalid_attrs %{name: nil, kind: nil}
 
   setup :register_and_log_in_user_with_org
 
@@ -22,7 +22,7 @@ defmodule OddishWeb.ProcedureLiveTest do
     test "lists all procedures", %{conn: conn, procedure: procedure, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/procedures")
 
-      assert html =~ "Listing Procedures"
+      assert html =~ "Listando Procedimentos"
       assert html =~ procedure.name
     end
 
@@ -31,11 +31,11 @@ defmodule OddishWeb.ProcedureLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Procedure")
+               |> element("a", "Novo Procedimento")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/procedures/new")
 
-      assert render(form_live) =~ "New Procedure"
+      assert render(form_live) =~ "Novo Procedimento"
 
       assert form_live
              |> form("#procedure-form", procedure: @invalid_attrs)
@@ -48,7 +48,7 @@ defmodule OddishWeb.ProcedureLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/procedures")
 
       html = render(index_live)
-      assert html =~ "Procedure created successfully"
+      assert html =~ "Procedimento criado com sucesso"
       assert html =~ "some name"
     end
 
@@ -57,14 +57,14 @@ defmodule OddishWeb.ProcedureLiveTest do
 
       assert {:ok, form_live, _html} =
                index_live
-               |> element("#procedures-#{procedure.id} a", "Edit")
+               |> element("#procedures-#{procedure.id} a", "Editar")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/procedures/#{procedure}/edit"
                )
 
-      assert render(form_live) =~ "Edit Procedure"
+      assert render(form_live) =~ "Editar Procedimento"
 
       assert form_live
              |> form("#procedure-form", procedure: @invalid_attrs)
@@ -77,14 +77,14 @@ defmodule OddishWeb.ProcedureLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/procedures")
 
       html = render(index_live)
-      assert html =~ "Procedure updated successfully"
+      assert html =~ "Procedimento atualizado com sucesso"
       assert html =~ "some updated name"
     end
 
     test "deletes procedure in listing", %{conn: conn, procedure: procedure, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/procedures")
 
-      assert index_live |> element("#procedures-#{procedure.id} a", "Delete") |> render_click()
+      assert index_live |> element("#procedures-#{procedure.id} a", "Excluir") |> render_click()
       refute has_element?(index_live, "#procedures-#{procedure.id}")
     end
   end
@@ -96,7 +96,7 @@ defmodule OddishWeb.ProcedureLiveTest do
       {:ok, _show_live, html} =
         live(conn, ~p"/o/#{scope.organization.slug}/procedures/#{procedure}")
 
-      assert html =~ "Show Procedure"
+      assert html =~ "Ver Procedimento"
       assert html =~ procedure.name
     end
 
@@ -110,14 +110,14 @@ defmodule OddishWeb.ProcedureLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/procedures/#{procedure}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Procedure"
+      assert render(form_live) =~ "Editar Procedimento"
 
       assert form_live
              |> form("#procedure-form", procedure: @invalid_attrs)
@@ -130,7 +130,7 @@ defmodule OddishWeb.ProcedureLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/procedures/#{procedure}")
 
       html = render(show_live)
-      assert html =~ "Procedure updated successfully"
+      assert html =~ "Procedimento atualizado com sucesso"
       assert html =~ "some updated name"
     end
   end

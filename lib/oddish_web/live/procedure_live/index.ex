@@ -8,13 +8,13 @@ defmodule OddishWeb.ProcedureLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Procedures
+        Listando Procedimentos
         <:actions>
           <.button
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/procedures/new"}
           >
-            <.icon name="hero-plus" /> New Procedure
+            <.icon name="hero-plus" /> Novo Procedimento
           </.button>
         </:actions>
       </.header>
@@ -28,24 +28,24 @@ defmodule OddishWeb.ProcedureLive.Index do
           end
         }
       >
-        <:col :let={{_id, procedure}} label="Name">{procedure.name}</:col>
-        <:col :let={{_id, procedure}} label="Type">{procedure.type}</:col>
+        <:col :let={{_id, procedure}} label="Nome">{procedure.name}</:col>
+        <:col :let={{_id, procedure}} label="Tipo">{procedure.kind}</:col>
         <:action :let={{_id, procedure}}>
           <div class="sr-only">
             <.link navigate={~p"/o/#{@current_scope.organization.slug}/procedures/#{procedure}"}>
-              Show
+              Ver
             </.link>
           </div>
           <.link navigate={~p"/o/#{@current_scope.organization.slug}/procedures/#{procedure}/edit"}>
-            Edit
+            Editar
           </.link>
         </:action>
         <:action :let={{id, procedure}}>
           <.link
             phx-click={JS.push("delete", value: %{id: procedure.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza?"
           >
-            Delete
+            Excluir
           </.link>
         </:action>
       </.table>
@@ -61,7 +61,7 @@ defmodule OddishWeb.ProcedureLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Procedures")
+     |> assign(:page_title, "Listando Procedimentos")
      |> stream(:procedures, list_procedures(socket.assigns.current_scope))}
   end
 

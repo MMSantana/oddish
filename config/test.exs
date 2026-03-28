@@ -12,6 +12,7 @@ config :oddish, Oddish.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
+  port: 5433,
   database: "oddish_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
@@ -19,7 +20,7 @@ config :oddish, Oddish.Repo,
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :oddish, OddishWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
+  http: [ip: {127, 0, 0, 1}, port: 4001],
   secret_key_base: "Vwl6iagWXk0G/QFzzqPWE3pJs8nVacY8dOHX0aJcWYO4AfX1Eye3g0QWz4kCnaIP",
   server: false
 

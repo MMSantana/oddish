@@ -4,7 +4,7 @@ defmodule OddishWeb.VisitLiveTest do
   import Phoenix.LiveViewTest
   import Oddish.MedicineFixtures
 
-  @invalid_attrs %{date: nil, vet_id: nil, procedure_id: nil, bovine_id: nil, notes: nil}
+  @invalid_attrs %{date: nil, vet_id: nil, procedure_id: nil, notes: nil}
 
   setup :register_and_log_in_user_with_org
 
@@ -20,7 +20,7 @@ defmodule OddishWeb.VisitLiveTest do
     test "lists all visits", %{conn: conn, visit: _visit, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/visits")
 
-      assert html =~ "Listing Visits"
+      assert html =~ "Listando Visitas"
     end
 
     test "saves new visit", %{conn: conn, scope: scope} do
@@ -31,15 +31,23 @@ defmodule OddishWeb.VisitLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Visit")
+               |> element("a", "Nova Visita")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/visits/new")
 
-      assert render(form_live) =~ "New Visit"
+      assert render(form_live) =~ "Nova Visita"
 
       assert form_live
              |> form("#visit-form", visit: @invalid_attrs)
              |> render_change() =~ "Não pode estar em branco"
+
+      form_live
+      |> element("input[phx-keyup=\"search_bovine\"]")
+      |> render_keyup(%{"value" => bovine.name})
+
+      form_live
+      |> element("li[phx-value-id=\"#{bovine.id}\"]")
+      |> render_click()
 
       assert {:ok, index_live, _html} =
                form_live
@@ -48,7 +56,7 @@ defmodule OddishWeb.VisitLiveTest do
                    date: "2026-03-20",
                    vet_id: vet.id,
                    procedure_id: procedure.id,
-                   bovine_id: bovine.id,
+                   bovine_ids: [to_string(bovine.id)],
                    notes: "some notes"
                  }
                )
@@ -56,7 +64,7 @@ defmodule OddishWeb.VisitLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/visits")
 
       html = render(index_live)
-      assert html =~ "Visit created successfully"
+      assert html =~ "Visita criada com sucesso"
     end
 
     test "updates visit in listing", %{conn: conn, visit: visit, scope: scope} do
@@ -67,15 +75,23 @@ defmodule OddishWeb.VisitLiveTest do
 
       assert {:ok, form_live, _html} =
                index_live
-               |> element("#visits-#{visit.id} a", "Edit")
+               |> element("#visits-#{visit.id} a", "Editar")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/visits/#{visit}/edit")
 
-      assert render(form_live) =~ "Edit Visit"
+      assert render(form_live) =~ "Editar Visita"
 
       assert form_live
              |> form("#visit-form", visit: @invalid_attrs)
              |> render_change() =~ "Não pode estar em branco"
+
+      form_live
+      |> element("input[phx-keyup=\"search_bovine\"]")
+      |> render_keyup(%{"value" => bovine.name})
+
+      form_live
+      |> element("li[phx-value-id=\"#{bovine.id}\"]")
+      |> render_click()
 
       assert {:ok, index_live, _html} =
                form_live
@@ -84,7 +100,7 @@ defmodule OddishWeb.VisitLiveTest do
                    date: "2026-03-21",
                    vet_id: vet.id,
                    procedure_id: procedure.id,
-                   bovine_id: bovine.id,
+                   bovine_ids: [to_string(bovine.id)],
                    notes: "some updated notes"
                  }
                )
@@ -92,13 +108,13 @@ defmodule OddishWeb.VisitLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/visits")
 
       html = render(index_live)
-      assert html =~ "Visit updated successfully"
+      assert html =~ "Visita atualizada com sucesso"
     end
 
     test "deletes visit in listing", %{conn: conn, visit: visit, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/visits")
 
-      assert index_live |> element("#visits-#{visit.id} a", "Delete") |> render_click()
+      assert index_live |> element("#visits-#{visit.id} a", "Excluir") |> render_click()
       refute has_element?(index_live, "#visits-#{visit.id}")
     end
   end
@@ -109,7 +125,7 @@ defmodule OddishWeb.VisitLiveTest do
     test "displays visit", %{conn: conn, visit: visit, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/visits/#{visit}")
 
-      assert html =~ "Show Visit"
+      assert html =~ "Ver Visita"
     end
 
     test "updates visit and returns to show", %{conn: conn, visit: visit, scope: scope} do
@@ -120,18 +136,26 @@ defmodule OddishWeb.VisitLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/visits/#{visit}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Visit"
+      assert render(form_live) =~ "Editar Visita"
 
       assert form_live
              |> form("#visit-form", visit: @invalid_attrs)
              |> render_change() =~ "Não pode estar em branco"
+
+      form_live
+      |> element("input[phx-keyup=\"search_bovine\"]")
+      |> render_keyup(%{"value" => bovine.name})
+
+      form_live
+      |> element("li[phx-value-id=\"#{bovine.id}\"]")
+      |> render_click()
 
       assert {:ok, show_live, _html} =
                form_live
@@ -140,7 +164,7 @@ defmodule OddishWeb.VisitLiveTest do
                    date: "2026-03-21",
                    vet_id: vet.id,
                    procedure_id: procedure.id,
-                   bovine_id: bovine.id,
+                   bovine_ids: [to_string(bovine.id)],
                    notes: "some updated notes"
                  }
                )
@@ -148,7 +172,7 @@ defmodule OddishWeb.VisitLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/visits/#{visit}")
 
       html = render(show_live)
-      assert html =~ "Visit updated successfully"
+      assert html =~ "Visita atualizada com sucesso"
     end
   end
 end

@@ -17,6 +17,7 @@ defmodule Oddish.Cattle.Bovine do
     belongs_to :pack, Oddish.Packs.Pack
     belongs_to :mother, __MODULE__
     has_many :offspring, __MODULE__, foreign_key: :mother_id
+    many_to_many :visits, Oddish.Medicine.Visit, join_through: "visits_bovines"
 
     timestamps(type: :utc_datetime)
   end

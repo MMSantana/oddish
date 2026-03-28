@@ -4,7 +4,7 @@ defmodule Oddish.Medicine.Procedure do
 
   schema "procedures" do
     field :name, :string
-    field :type, Ecto.Enum, values: [:consultation, :vaccine, :insemination, :touch]
+    field :kind, Ecto.Enum, values: [:consultation, :vaccine, :iatf]
     field :org_id, :id
 
     timestamps(type: :utc_datetime)
@@ -13,8 +13,16 @@ defmodule Oddish.Medicine.Procedure do
   @doc false
   def changeset(procedure, attrs, organization_scope) do
     procedure
-    |> cast(attrs, [:name, :type])
-    |> validate_required([:name, :type], message: "Não pode estar em branco")
+    |> cast(attrs, [:name, :kind])
+    |> validate_required([:name, :kind], message: "Não pode estar em branco")
     |> put_change(:org_id, organization_scope.organization.id)
+  end
+
+  def present_type(status) do
+    case status do
+      :consultation -> "Consulta"
+      :vaccine -> "Vacina"
+      :iatf -> "IATF"
+    end
   end
 end

@@ -10,15 +10,24 @@ defmodule OddishWeb.ProcedureLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage procedure records in your database.</:subtitle>
+        <:subtitle>Use este formulário para gerenciar procedimentos no banco de dados.</:subtitle>
       </.header>
 
       <.form for={@form} id="procedure-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:type]} type="text" label="Type" />
+        <.input field={@form[:name]} type="text" label="Nome" />
+        <.input
+          field={@form[:kind]}
+          type="select"
+          label="Tipo"
+          prompt="--"
+          options={
+            Ecto.Enum.values(Oddish.Medicine.Procedure, :kind)
+            |> Enum.map(fn status -> {Oddish.Medicine.Procedure.present_type(status), status} end)
+          }
+        />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Procedure</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @procedure)}>Cancel</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar Procedimento</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @procedure)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -40,7 +49,7 @@ defmodule OddishWeb.ProcedureLive.Form do
     procedure = Medicine.get_procedure!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Procedure")
+    |> assign(:page_title, "Editar Procedimento")
     |> assign(:procedure, procedure)
     |> assign(:form, to_form(Medicine.change_procedure(socket.assigns.current_scope, procedure)))
   end
@@ -49,7 +58,7 @@ defmodule OddishWeb.ProcedureLive.Form do
     procedure = %Procedure{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Procedure")
+    |> assign(:page_title, "Novo Procedimento")
     |> assign(:procedure, procedure)
     |> assign(:form, to_form(Medicine.change_procedure(socket.assigns.current_scope, procedure)))
   end
@@ -79,7 +88,7 @@ defmodule OddishWeb.ProcedureLive.Form do
       {:ok, procedure} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Procedure updated successfully")
+         |> put_flash(:info, "Procedimento atualizado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, procedure)
          )}
@@ -94,7 +103,7 @@ defmodule OddishWeb.ProcedureLive.Form do
       {:ok, procedure} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Procedure created successfully")
+         |> put_flash(:info, "Procedimento criado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, procedure)
          )}

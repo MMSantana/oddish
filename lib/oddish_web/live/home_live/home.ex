@@ -48,6 +48,16 @@ defmodule OddishWeb.HomeLive.Home do
           color="bg-primary"
         />
       </div>
+
+      <div>
+        <.navigation_card
+          path={~p"/o/#{@current_scope.organization.slug}/visits"}
+          icon="hero-chart-bar"
+          title="Veterinário"
+          description="Visitas veterinárias"
+          color="bg-primary"
+        />
+      </div>
     </Layouts.app>
     """
   end

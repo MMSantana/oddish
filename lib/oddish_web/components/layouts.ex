@@ -35,27 +35,40 @@ defmodule OddishWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">Madalena</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <.theme_toggle />
-          </li>
-        </ul>
-      </div>
-    </header>
+    <div x-data="{ sidebarOpen: true }" class="flex h-screen w-full overflow-hidden bg-base-100">
+      <OddishWeb.Sidebar.sidebar current_scope={@current_scope} />
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
+      <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="navbar px-4 sm:px-6 lg:px-8 border-b border-base-200">
+          <div class="flex-1 flex items-center gap-2">
+            <button
+              @click="sidebarOpen = !sidebarOpen"
+              class="btn btn-square btn-ghost mr-2"
+              title="Toggle Sidebar"
+            >
+              <.icon name="hero-bars-3" class="size-5" />
+            </button>
+            <a href="/" class="flex flex-1 w-fit items-center gap-2">
+              <img src={~p"/images/logo.svg"} width="36" />
+              <span class="text-sm font-semibold">Madalena</span>
+            </a>
+          </div>
+          <div class="flex-none">
+            <ul class="flex flex-column px-1 space-x-4 items-center">
+              <li>
+                <.theme_toggle />
+              </li>
+            </ul>
+          </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto px-4 py-10 sm:px-6 lg:px-8 pt-6">
+          <div class="mx-auto max-w-5xl space-y-4">
+            {render_slot(@inner_block)}
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
 
     <.flash_group flash={@flash} />
     """

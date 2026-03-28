@@ -10,16 +10,16 @@ defmodule OddishWeb.VetLive.Form do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
         {@page_title}
-        <:subtitle>Use this form to manage vet records in your database.</:subtitle>
+        <:subtitle>Use este formulário para gerenciar veterinários no banco de dados.</:subtitle>
       </.header>
 
       <.form for={@form} id="vet-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:telephone]} type="text" label="Telephone" />
+        <.input field={@form[:name]} type="text" label="Nome" />
+        <.input field={@form[:telephone]} type="text" label="Telefone" />
         <.input field={@form[:email]} type="text" label="Email" />
         <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Vet</.button>
-          <.button navigate={return_path(@current_scope, @return_to, @vet)}>Cancel</.button>
+          <.button phx-disable-with="Salvando..." variant="primary">Salvar Veterinário</.button>
+          <.button navigate={return_path(@current_scope, @return_to, @vet)}>Cancelar</.button>
         </footer>
       </.form>
     </Layouts.app>
@@ -41,7 +41,7 @@ defmodule OddishWeb.VetLive.Form do
     vet = Medicine.get_vet!(socket.assigns.current_scope, id)
 
     socket
-    |> assign(:page_title, "Edit Vet")
+    |> assign(:page_title, "Editar Veterinário")
     |> assign(:vet, vet)
     |> assign(:form, to_form(Medicine.change_vet(socket.assigns.current_scope, vet)))
   end
@@ -50,7 +50,7 @@ defmodule OddishWeb.VetLive.Form do
     vet = %Vet{org_id: socket.assigns.current_scope.organization.id}
 
     socket
-    |> assign(:page_title, "New Vet")
+    |> assign(:page_title, "Novo Veterinário")
     |> assign(:vet, vet)
     |> assign(:form, to_form(Medicine.change_vet(socket.assigns.current_scope, vet)))
   end
@@ -70,7 +70,7 @@ defmodule OddishWeb.VetLive.Form do
       {:ok, vet} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Vet updated successfully")
+         |> put_flash(:info, "Veterinário atualizado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, vet)
          )}
@@ -85,7 +85,7 @@ defmodule OddishWeb.VetLive.Form do
       {:ok, vet} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Vet created successfully")
+         |> put_flash(:info, "Veterinário criado com sucesso")
          |> push_navigate(
            to: return_path(socket.assigns.current_scope, socket.assigns.return_to, vet)
          )}

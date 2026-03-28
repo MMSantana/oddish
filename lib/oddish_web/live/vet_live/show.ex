@@ -8,8 +8,8 @@ defmodule OddishWeb.VetLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Vet {@vet.id}
-        <:subtitle>This is a vet record from your database.</:subtitle>
+        Veterinário {@vet.id}
+        <:subtitle>Este é um registro de veterinário do seu banco de dados.</:subtitle>
         <:actions>
           <.button navigate={~p"/o/#{@current_scope.organization.slug}/vets"}>
             <.icon name="hero-arrow-left" />
@@ -18,14 +18,14 @@ defmodule OddishWeb.VetLive.Show do
             variant="primary"
             navigate={~p"/o/#{@current_scope.organization.slug}/vets/#{@vet}/edit?return_to=show"}
           >
-            <.icon name="hero-pencil-square" /> Edit vet
+            <.icon name="hero-pencil-square" /> Editar veterinário
           </.button>
         </:actions>
       </.header>
 
       <.list>
-        <:item title="Name">{@vet.name}</:item>
-        <:item title="Telephone">{@vet.telephone}</:item>
+        <:item title="Nome">{@vet.name}</:item>
+        <:item title="Telefone">{@vet.telephone}</:item>
         <:item title="Email">{@vet.email}</:item>
       </.list>
     </Layouts.app>
@@ -40,7 +40,7 @@ defmodule OddishWeb.VetLive.Show do
 
     {:ok,
      socket
-     |> assign(:page_title, "Show Vet")
+     |> assign(:page_title, "Ver Veterinário")
      |> assign(:vet, Medicine.get_vet!(socket.assigns.current_scope, id))}
   end
 
@@ -58,7 +58,7 @@ defmodule OddishWeb.VetLive.Show do
       ) do
     {:noreply,
      socket
-     |> put_flash(:error, "The current vet was deleted.")
+     |> put_flash(:error, "O veterinário atual foi excluído.")
      |> push_navigate(to: ~p"/o/#{socket.assigns.current_scope.organization.slug}/vets")}
   end
 

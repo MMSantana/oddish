@@ -8,10 +8,10 @@ defmodule OddishWeb.VisitLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        Listing Visits
+        Listando Visitas
         <:actions>
           <.button variant="primary" navigate={~p"/o/#{@current_scope.organization.slug}/visits/new"}>
-            <.icon name="hero-plus" /> New Visit
+            <.icon name="hero-plus" /> Nova Visita
           </.button>
         </:actions>
       </.header>
@@ -25,25 +25,26 @@ defmodule OddishWeb.VisitLive.Index do
           end
         }
       >
-        <:col :let={{_id, visit}} label="Vet">{visit.vet_id}</:col>
-        <:col :let={{_id, visit}} label="Procedure">{visit.procedure_id}</:col>
-        <:col :let={{_id, visit}} label="Bovine">{visit.bovine_id}</:col>
-        <:col :let={{_id, visit}} label="Date">{visit.date}</:col>
-        <:col :let={{_id, visit}} label="Notes">{visit.notes}</:col>
+        <:col :let={{_id, visit}} label="Veterinário">{visit.vet.name}</:col>
+        <:col :let={{_id, visit}} label="Procedimento">{visit.procedure.name}</:col>
+        <:col :let={{_id, visit}} label="Pago?">{if visit.paid?, do: "Sim", else: "Não"}</:col>
+        <:col :let={{_id, visit}} label="Animais">{length(visit.bovines)}</:col>
+        <:col :let={{_id, visit}} label="Data">{visit.date}</:col>
+        <:col :let={{_id, visit}} label="Observações">{visit.notes}</:col>
         <:action :let={{_id, visit}}>
           <div class="sr-only">
-            <.link navigate={~p"/o/#{@current_scope.organization.slug}/visits/#{visit}"}>Show</.link>
+            <.link navigate={~p"/o/#{@current_scope.organization.slug}/visits/#{visit}"}>Ver</.link>
           </div>
           <.link navigate={~p"/o/#{@current_scope.organization.slug}/visits/#{visit}/edit"}>
-            Edit
+            Editar
           </.link>
         </:action>
         <:action :let={{id, visit}}>
           <.link
             phx-click={JS.push("delete", value: %{id: visit.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
+            data-confirm="Tem certeza?"
           >
-            Delete
+            Excluir
           </.link>
         </:action>
       </.table>
@@ -59,7 +60,7 @@ defmodule OddishWeb.VisitLive.Index do
 
     {:ok,
      socket
-     |> assign(:page_title, "Listing Visits")
+     |> assign(:page_title, "Listando Visitas")
      |> stream(:visits, list_visits(socket.assigns.current_scope))}
   end
 

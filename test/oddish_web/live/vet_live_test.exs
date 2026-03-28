@@ -26,7 +26,7 @@ defmodule OddishWeb.VetLiveTest do
     test "lists all vets", %{conn: conn, vet: vet, scope: scope} do
       {:ok, _index_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/vets")
 
-      assert html =~ "Listing Vets"
+      assert html =~ "Listando Veterinários"
       assert html =~ vet.name
     end
 
@@ -35,11 +35,11 @@ defmodule OddishWeb.VetLiveTest do
 
       assert {:ok, form_live, _} =
                index_live
-               |> element("a", "New Vet")
+               |> element("a", "Novo Veterinário")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/vets/new")
 
-      assert render(form_live) =~ "New Vet"
+      assert render(form_live) =~ "Novo Veterinário"
 
       assert form_live
              |> form("#vet-form", vet: @invalid_attrs)
@@ -52,7 +52,7 @@ defmodule OddishWeb.VetLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/vets")
 
       html = render(index_live)
-      assert html =~ "Vet created successfully"
+      assert html =~ "Veterinário criado com sucesso"
       assert html =~ "some name"
     end
 
@@ -61,11 +61,11 @@ defmodule OddishWeb.VetLiveTest do
 
       assert {:ok, form_live, _html} =
                index_live
-               |> element("#vets-#{vet.id} a", "Edit")
+               |> element("#vets-#{vet.id} a", "Editar")
                |> render_click()
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/vets/#{vet}/edit")
 
-      assert render(form_live) =~ "Edit Vet"
+      assert render(form_live) =~ "Editar Veterinário"
 
       assert form_live
              |> form("#vet-form", vet: @invalid_attrs)
@@ -78,14 +78,14 @@ defmodule OddishWeb.VetLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/vets")
 
       html = render(index_live)
-      assert html =~ "Vet updated successfully"
+      assert html =~ "Veterinário atualizado com sucesso"
       assert html =~ "some updated name"
     end
 
     test "deletes vet in listing", %{conn: conn, vet: vet, scope: scope} do
       {:ok, index_live, _html} = live(conn, ~p"/o/#{scope.organization.slug}/vets")
 
-      assert index_live |> element("#vets-#{vet.id} a", "Delete") |> render_click()
+      assert index_live |> element("#vets-#{vet.id} a", "Excluir") |> render_click()
       refute has_element?(index_live, "#vets-#{vet.id}")
     end
   end
@@ -96,7 +96,7 @@ defmodule OddishWeb.VetLiveTest do
     test "displays vet", %{conn: conn, vet: vet, scope: scope} do
       {:ok, _show_live, html} = live(conn, ~p"/o/#{scope.organization.slug}/vets/#{vet}")
 
-      assert html =~ "Show Vet"
+      assert html =~ "Ver Veterinário"
       assert html =~ vet.name
     end
 
@@ -105,14 +105,14 @@ defmodule OddishWeb.VetLiveTest do
 
       assert {:ok, form_live, _} =
                show_live
-               |> element("a", "Edit")
+               |> element("a", "Editar")
                |> render_click()
                |> follow_redirect(
                  conn,
                  ~p"/o/#{scope.organization.slug}/vets/#{vet}/edit?return_to=show"
                )
 
-      assert render(form_live) =~ "Edit Vet"
+      assert render(form_live) =~ "Editar Veterinário"
 
       assert form_live
              |> form("#vet-form", vet: @invalid_attrs)
@@ -125,7 +125,7 @@ defmodule OddishWeb.VetLiveTest do
                |> follow_redirect(conn, ~p"/o/#{scope.organization.slug}/vets/#{vet}")
 
       html = render(show_live)
-      assert html =~ "Vet updated successfully"
+      assert html =~ "Veterinário atualizado com sucesso"
       assert html =~ "some updated name"
     end
   end

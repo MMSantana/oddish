@@ -320,6 +320,7 @@ defmodule Oddish.Medicine do
   """
   def list_visits(%Scope{} = scope) do
     Repo.all_by(Visit, org_id: scope.organization.id)
+    |> Repo.preload([:bovines, :vet, :procedure])
   end
 
   @doc """
@@ -338,6 +339,7 @@ defmodule Oddish.Medicine do
   """
   def get_visit!(%Scope{} = scope, id) do
     Repo.get_by!(Visit, id: id, org_id: scope.organization.id)
+    |> Repo.preload([:bovines, :vet, :procedure])
   end
 
   @doc """
@@ -353,10 +355,22 @@ defmodule Oddish.Medicine do
 
   """
   def create_visit(%Scope{} = scope, attrs) do
-    with {:ok, visit = %Visit{}} <-
-           %Visit{}
-           |> Visit.changeset(attrs, scope)
-           |> Repo.insert() do
+    bovine_ids =
+      Map.get(attrs, "bovine_ids", Map.get(attrs, :bovine_ids, [])) |> Enum.reject(&(&1 == ""))
+
+    bovines =
+      Repo.all(
+        from b in Oddish.Cattle.Bovine,
+          where: b.id in ^bovine_ids and b.org_id == ^scope.organization.id
+      )
+
+    changeset =
+      %Visit{}
+      |> Visit.changeset(attrs, scope)
+      |> Ecto.Changeset.put_assoc(:bovines, bovines)
+
+    with {:ok, visit = %Visit{}} <- Repo.insert(changeset) do
+      visit = Repo.preload(visit, [:bovines, :vet, :procedure])
       broadcast_visit(scope, {:created, visit})
       {:ok, visit}
     end
@@ -377,10 +391,28 @@ defmodule Oddish.Medicine do
   def update_visit(%Scope{} = scope, %Visit{} = visit, attrs) do
     true = visit.org_id == scope.organization.id
 
-    with {:ok, visit = %Visit{}} <-
-           visit
-           |> Visit.changeset(attrs, scope)
-           |> Repo.update() do
+    visit = Repo.preload(visit, :bovines)
+    changeset = Visit.changeset(visit, attrs, scope)
+
+    changeset =
+      if Map.has_key?(attrs, "bovine_ids") or Map.has_key?(attrs, :bovine_ids) do
+        bovine_ids =
+          Map.get(attrs, "bovine_ids", Map.get(attrs, :bovine_ids, []))
+          |> Enum.reject(&(&1 == ""))
+
+        bovines =
+          Repo.all(
+            from b in Oddish.Cattle.Bovine,
+              where: b.id in ^bovine_ids and b.org_id == ^scope.organization.id
+          )
+
+        Ecto.Changeset.put_assoc(changeset, :bovines, bovines)
+      else
+        changeset
+      end
+
+    with {:ok, visit = %Visit{}} <- Repo.update(changeset) do
+      visit = Repo.preload(visit, [:bovines, :vet, :procedure])
       broadcast_visit(scope, {:updated, visit})
       {:ok, visit}
     end
@@ -420,6 +452,7 @@ defmodule Oddish.Medicine do
   def change_visit(%Scope{} = scope, %Visit{} = visit, attrs \\ %{}) do
     true = visit.org_id == scope.organization.id
 
+    visit = Repo.preload(visit, :bovines)
     Visit.changeset(visit, attrs, scope)
   end
 end

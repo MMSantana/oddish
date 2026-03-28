@@ -26,7 +26,7 @@ defmodule Oddish.MedicineFixtures do
     attrs =
       Enum.into(attrs, %{
         name: "some name",
-        type: :touch
+        kind: :iatf
       })
 
     {:ok, procedure} = Oddish.Medicine.create_procedure(scope, attrs)
@@ -43,7 +43,7 @@ defmodule Oddish.MedicineFixtures do
 
     attrs =
       Enum.into(attrs, %{
-        bovine_id: bovine.id,
+        bovine_ids: [bovine.id],
         date: ~D[2026-03-20],
         notes: "some notes",
         procedure_id: procedure.id,
