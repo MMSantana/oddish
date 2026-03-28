@@ -53,6 +53,31 @@ defmodule Oddish.Packs do
   end
 
   @doc """
+  Gets the count of packs by status.
+  """
+  def count_packs_by_status(%Scope{} = scope, status) do
+    from(p in Pack,
+      where: p.org_id == ^scope.organization.id and p.status == ^status,
+      select: count(p.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Gets the count of active packs that are not currently participating in an ongoing graze.
+  """
+  def count_packs_without_ongoing_graze(%Scope{} = scope) do
+    from(p in Pack,
+      where: p.org_id == ^scope.organization.id and p.status == :active,
+      left_join: g in Oddish.Grazes.Graze,
+      on: g.pack_id == p.id and g.status == :ongoing,
+      where: is_nil(g.id),
+      select: count(p.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Gets a single pack.
 
   Raises `Ecto.NoResultsError` if the Pack does not exist.

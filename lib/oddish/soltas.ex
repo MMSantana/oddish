@@ -49,6 +49,36 @@ defmodule Oddish.Soltas do
   end
 
   @doc """
+  Returns the total count of soltas.
+  """
+  def count_total_soltas(%Scope{} = scope) do
+    from(s in Solta, where: s.org_id == ^scope.organization.id, select: count(s.id))
+    |> Repo.one()
+  end
+
+  @doc """
+  Returns the total area aggregated among all soltas.
+  """
+  def total_solta_area(%Scope{} = scope) do
+    from(s in Solta, where: s.org_id == ^scope.organization.id, select: sum(s.area))
+    |> Repo.one() || Decimal.new("0.0")
+  end
+
+  @doc """
+  Returns the count of soltas that do not have any active (ongoing) graze pointing to them.
+  """
+  def count_soltas_without_ongoing_graze(%Scope{} = scope) do
+    from(s in Solta,
+      where: s.org_id == ^scope.organization.id,
+      left_join: g in Oddish.Grazes.Graze,
+      on: g.solta_id == s.id and g.status == :ongoing,
+      where: is_nil(g.id),
+      select: count(s.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Gets a single solta.
 
   Raises `Ecto.NoResultsError` if the Solta does not exist.

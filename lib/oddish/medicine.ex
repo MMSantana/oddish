@@ -340,6 +340,24 @@ defmodule Oddish.Medicine do
   end
 
   @doc """
+  Returns the number of visits completed in the current calendar month.
+  """
+  def count_visits_this_month(%Scope{} = scope) do
+    today = Date.utc_today()
+    start_date = Date.beginning_of_month(today)
+    end_date = Date.end_of_month(today)
+
+    from(v in Visit,
+      where:
+        v.org_id == ^scope.organization.id and
+          v.date >= ^start_date and
+          v.date <= ^end_date,
+      select: count(v.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Gets a single visit.
 
   Raises `Ecto.NoResultsError` if the Visit does not exist.

@@ -54,6 +54,63 @@ defmodule Oddish.Cattle do
     Repo.all_by(Bovine, org_id: scope.organization.id, gender: :female)
   end
 
+  @doc """
+  Gets the count of bovines by status.
+  """
+  def count_bovines_by_status(%Scope{} = scope, status) do
+    from(b in Bovine,
+      where: b.org_id == ^scope.organization.id and b.status == ^status,
+      select: count(b.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Gets the count of bovines born in the current month.
+  """
+  def count_bovines_born_this_month(%Scope{} = scope) do
+    today = Date.utc_today()
+    start_date = Date.beginning_of_month(today)
+    end_date = Date.end_of_month(today)
+
+    from(b in Bovine,
+      where:
+        b.org_id == ^scope.organization.id and
+          b.date_of_birth >= ^start_date and
+          b.date_of_birth <= ^end_date,
+      select: count(b.id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Gets the count of bovines departed in the current month, grouped by status.
+  """
+  def get_departed_bovines_this_month(%Scope{} = scope) do
+    today = Date.utc_today()
+    start_date = Date.beginning_of_month(today)
+    end_date = Date.end_of_month(today)
+
+    counts =
+      from(b in Bovine,
+        where:
+          b.org_id == ^scope.organization.id and
+            b.status in [:sold, :deceased, :lost] and
+            b.departed_date >= ^start_date and
+            b.departed_date <= ^end_date,
+        group_by: b.status,
+        select: {b.status, count(b.id)}
+      )
+      |> Repo.all()
+      |> Map.new()
+
+    %{
+      sold: Map.get(counts, :sold, 0),
+      deceased: Map.get(counts, :deceased, 0),
+      lost: Map.get(counts, :lost, 0)
+    }
+  end
+
   def name_number_search(%Scope{} = scope, query) when query == "" or is_nil(query) do
     list_bovines(scope)
   end
